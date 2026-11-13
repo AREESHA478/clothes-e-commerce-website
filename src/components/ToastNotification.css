@@ -1,0 +1,92 @@
+/* ===================================================================
+   TOAST NOTIFICATION STYLING
+   =================================================================== */
+
+.toast-container {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1500;
+  max-width: 380px;
+}
+
+.toast-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: var(--radius-sm);
+  background-color: rgba(255, 255, 255, 0.96);
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 10px 30px rgba(18, 24, 17, 0.18);
+}
+
+.toast-icon-frame {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--olive-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon-cart {
+  color: var(--olive-700);
+}
+
+.icon-heart {
+  color: var(--olive-700);
+}
+
+.icon-success {
+  color: #2e6930;
+}
+
+.icon-error {
+  color: #b73e3e;
+}
+
+.icon-info {
+  color: var(--olive-600);
+}
+
+.toast-text-area {
+  flex: 1;
+}
+
+.toast-msg {
+  font-size: 0.84rem;
+  font-weight: 600;
+  color: var(--olive-950);
+  line-height: 1.35;
+}
+
+.toast-view-cart-link {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--olive-700);
+  margin-top: 3px;
+  text-decoration: underline;
+}
+
+.toast-dismiss-btn {
+  color: var(--text-light);
+  padding: 4px;
+  transition: color var(--transition-fast);
+}
+
+.toast-dismiss-btn:hover {
+  color: var(--olive-900);
+}
+
+@media (max-width: 576px) {
+  .toast-container {
+    bottom: 16px;
+    right: 16px;
+    left: 16px;
+    max-width: none;
+  }
+}

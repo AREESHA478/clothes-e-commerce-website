@@ -1,0 +1,276 @@
+/* ===================================================================
+   LOOKBOOK EDITORIAL SECTION STYLING
+   =================================================================== */
+
+.lookbook-section {
+  background: linear-gradient(180deg, var(--bg-primary) 0%, var(--cream-200) 100%);
+}
+
+.lookbook-wrapper {
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid var(--border-medium);
+}
+
+/* Left Visual with Hotspots */
+.lookbook-visual-frame {
+  position: relative;
+  min-height: 580px;
+  background-color: var(--olive-900);
+  overflow: hidden;
+}
+
+.lookbook-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s ease;
+}
+
+.lookbook-visual-frame:hover .lookbook-img {
+  transform: scale(1.02);
+}
+
+/* Interactive Hotspots */
+.lookbook-hotspot {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hotspot-1 {
+  top: 35%;
+  left: 45%;
+}
+
+.hotspot-2 {
+  top: 68%;
+  left: 60%;
+}
+
+.hotspot-dot {
+  width: 32px;
+  height: 32px;
+  background-color: var(--olive-700);
+  color: #ffffff;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  position: relative;
+  z-index: 2;
+  transition: all var(--transition-fast);
+}
+
+.lookbook-hotspot:hover .hotspot-dot,
+.lookbook-hotspot.is-active .hotspot-dot {
+  background-color: var(--gold-500);
+  transform: scale(1.15);
+}
+
+.hotspot-pulse {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+  background-color: rgba(58, 77, 57, 0.45);
+  border-radius: 50%;
+  animation: pulseSubtle 2s infinite;
+  z-index: 1;
+}
+
+/* Tooltip on Hotspot */
+.hotspot-tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(28, 38, 27, 0.95);
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: all var(--transition-fast);
+  box-shadow: var(--shadow-lg);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(197, 160, 89, 0.3);
+}
+
+.hotspot-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: rgba(28, 38, 27, 0.95) transparent transparent transparent;
+}
+
+.lookbook-hotspot:hover .hotspot-tooltip,
+.lookbook-hotspot.is-active .hotspot-tooltip {
+  opacity: 1;
+  visibility: visible;
+  bottom: calc(100% + 16px);
+}
+
+.tooltip-tag {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+  display: block;
+}
+
+.tooltip-title {
+  font-size: 0.84rem;
+  font-weight: 600;
+  margin: 2px 0;
+}
+
+.tooltip-price {
+  font-size: 0.8rem;
+  color: var(--cream-200);
+}
+
+/* Right Editorial Story */
+.lookbook-story {
+  padding: 50px 45px;
+  background-color: var(--cream-100);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.lookbook-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--olive-600);
+  margin-bottom: 16px;
+}
+
+.lookbook-headline {
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  line-height: 1.25;
+  color: var(--olive-950);
+  margin-bottom: 18px;
+}
+
+.lookbook-headline em {
+  font-style: italic;
+  color: var(--olive-700);
+}
+
+.lookbook-narrative {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--text-muted);
+  margin-bottom: 28px;
+}
+
+/* Featured Card */
+.lookbook-featured-card {
+  background-color: #ffffff;
+  padding: 16px 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 28px;
+  box-shadow: var(--shadow-sm);
+}
+
+.featured-card-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--olive-500);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.featured-card-content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.spotlight-thumb {
+  width: 74px;
+  height: 94px;
+  object-fit: cover;
+  border-radius: var(--radius-xs);
+}
+
+.spotlight-details {
+  flex: 1;
+}
+
+.spotlight-name {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--olive-950);
+  margin-bottom: 4px;
+}
+
+.spotlight-price {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--olive-700);
+  margin-bottom: 10px;
+}
+
+.spotlight-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* Quote */
+.lookbook-quote {
+  border-left: 2px solid var(--olive-600);
+  padding-left: 14px;
+  font-style: italic;
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.lookbook-quote span {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-style: normal;
+  color: var(--olive-700);
+  margin-top: 4px;
+}
+
+/* Responsiveness */
+@media (max-width: 992px) {
+  .lookbook-wrapper {
+    grid-template-columns: 1fr;
+  }
+  .lookbook-visual-frame {
+    min-height: 420px;
+  }
+  .lookbook-story {
+    padding: 36px 24px;
+  }
+}
