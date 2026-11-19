@@ -3,11 +3,29 @@
    =================================================================== */
 
 .quickview-overlay {
-  z-index: 1100;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(18, 20, 18, 0.75);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  padding: 24px;
+  overflow-y: auto;
+  animation: quickViewFadeIn 0.22s ease-out;
+}
+
+@keyframes quickViewFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .quickview-modal-content {
@@ -18,8 +36,19 @@
   border-radius: var(--radius-md);
   overflow-y: auto;
   position: relative;
-  box-shadow: 0 25px 60px rgba(18, 24, 17, 0.4);
-  animation: fadeIn 0.25s ease-out;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  animation: quickViewSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes quickViewSlideUp {
+  from {
+    transform: translateY(18px) scale(0.97);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
 .modal-close-btn {
@@ -502,6 +531,29 @@
   }
   .quickview-info {
     padding: 24px 20px;
+  }
+}
+
+@media (max-width: 540px) {
+  .quickview-overlay {
+    padding: 8px;
+  }
+  .quickview-modal-content {
+    max-height: 94vh;
+    border-radius: var(--radius-sm);
+  }
+  .quickview-gallery {
+    padding: 12px;
+  }
+  .quickview-info {
+    padding: 18px 14px;
+  }
+  .modal-action-row {
+    flex-wrap: wrap;
+  }
+  .btn-add-modal {
+    flex: 1;
+    min-width: 160px;
   }
 }
 

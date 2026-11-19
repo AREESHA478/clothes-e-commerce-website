@@ -3,7 +3,7 @@
    =================================================================== */
 
 .cart-drawer-overlay {
-  z-index: 1000;
+  z-index: 1300;
   display: flex;
   justify-content: flex-end;
 }

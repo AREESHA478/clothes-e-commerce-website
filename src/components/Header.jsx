@@ -6,7 +6,6 @@ import {
   ShoppingBag, 
   Menu, 
   X, 
-  PhoneCall, 
   Sparkles,
   Globe,
   ChevronDown,
@@ -14,22 +13,19 @@ import {
   Truck,
   Package,
   LogOut,
-  MapPin,
-  Award
+  MapPin
 } from 'lucide-react';
 import './Header.css';
 
-const Header = ({ onNavigateCategory }) => {
+const Header = ({ currentPage, onNavigatePage, onNavigateCategory }) => {
   const { 
     totalCartCount, 
-    cartSubtotal, 
     wishlist, 
     setIsCartOpen, 
     setIsWishlistOpen, 
     setIsSearchOpen,
     currency,
     setCurrency,
-    formatPrice,
     user,
     logout,
     setIsAuthModalOpen,
@@ -42,10 +38,20 @@ const Header = ({ onNavigateCategory }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [fontTheme, setFontTheme] = useState('editorial');
+
+  const handleFontChange = (theme) => {
+    setFontTheme(theme);
+    if (theme === 'clean-sans') {
+      document.documentElement.setAttribute('data-theme-font', 'clean-sans');
+    } else {
+      document.documentElement.removeAttribute('data-theme-font');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 40) {
+      if (window.scrollY > 30) {
         setIsScrolled(true);
       } else {
         setIsScrolled(false);
@@ -55,7 +61,15 @@ const Header = ({ onNavigateCategory }) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const handleNavClick = (category) => {
+  const handlePageClick = (pageName) => {
+    if (onNavigatePage) {
+      onNavigatePage(pageName);
+    }
+    setMobileMenuOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCategoryClick = (category) => {
     if (onNavigateCategory) {
       onNavigateCategory(category);
     }
@@ -79,16 +93,16 @@ const Header = ({ onNavigateCategory }) => {
 
   return (
     <header className={`header-root ${isScrolled ? 'header-scrolled' : ''}`}>
-      {/* Top Luxury Announcement Bar */}
+      {/* Top Announcement Bar */}
       <div className="top-announcement-bar">
         <div className="container top-announcement-content">
           <div className="announcement-left">
             <span className="announcement-badge">
-              <Sparkles size={12} className="sparkle-icon" />
-              Autumn Capsule
+              <Sparkles size={11} className="sparkle-icon" />
+              Autumn / Winter 2026
             </span>
             <p className="announcement-text">
-              Complimentary Express Delivery over Rs. 10,000 &bull; Code: <strong className="promo-highlight">OLIVE10</strong> (10% OFF)
+              Complimentary Express Delivery on orders over Rs. 10,000 &bull; Use code <strong className="promo-highlight">OLIVE10</strong>
             </p>
           </div>
 
@@ -114,6 +128,18 @@ const Header = ({ onNavigateCategory }) => {
                 <option value="USD">USD ($)</option>
               </select>
             </div>
+
+            <div className="font-theme-selector">
+              <select 
+                value={fontTheme} 
+                onChange={(e) => handleFontChange(e.target.value)}
+                aria-label="Font Style"
+                title="Change font pairing"
+              >
+                <option value="editorial">Font: Editorial Serif</option>
+                <option value="clean-sans">Font: Modern Sans</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -131,41 +157,57 @@ const Header = ({ onNavigateCategory }) => {
           </button>
 
           {/* Brand Logo */}
-          <div className="brand-logo" onClick={() => handleNavClick('All')}>
+          <div className="brand-logo" onClick={() => handlePageClick('home')}>
             <span className="brand-name">OLIVÉRA</span>
             <span className="brand-tagline">ATELIER &bull; COUTURE</span>
           </div>
 
-          {/* Streamlined Desktop Nav Links (5 uncluttered items) */}
+          {/* Clean Aesthetic Desktop Nav Links */}
           <ul className="nav-links">
             <li>
-              <button onClick={() => handleNavClick('Women')} className="nav-item">
-                Women
+              <button 
+                onClick={() => handlePageClick('home')} 
+                className={`nav-item ${currentPage === 'home' ? 'is-active' : ''}`}
+              >
+                Home
               </button>
             </li>
             <li>
-              <button onClick={() => handleNavClick('Men')} className="nav-item">
-                Men
+              <button 
+                onClick={() => handlePageClick('shop')} 
+                className={`nav-item ${currentPage === 'shop' ? 'is-active' : ''}`}
+              >
+                Shop
               </button>
             </li>
             <li>
-              <button onClick={() => handleNavClick('Co-ords')} className="nav-item">
-                Linen & Co-ords
+              <button 
+                onClick={() => handlePageClick('articles')} 
+                className={`nav-item ${currentPage === 'articles' ? 'is-active' : ''}`}
+              >
+                Articles
+                <span className="nav-articles-badge">Editorial</span>
               </button>
             </li>
             <li>
-              <a href="#lookbook" className="nav-item">
-                The Edit
-              </a>
+              <button 
+                onClick={() => handlePageClick('about')} 
+                className={`nav-item ${currentPage === 'about' ? 'is-active' : ''}`}
+              >
+                About
+              </button>
             </li>
             <li>
-              <button onClick={() => handleNavClick('Sale')} className="nav-item nav-item-sale">
-                Sale <span className="nav-sale-pill">-25%</span>
+              <button 
+                onClick={() => handlePageClick('contact')} 
+                className={`nav-item ${currentPage === 'contact' ? 'is-active' : ''}`}
+              >
+                Contact
               </button>
             </li>
           </ul>
 
-          {/* Right Action Icons (Sleek, uncluttered icon buttons) */}
+          {/* Right Action Icons */}
           <div className="navbar-actions">
             {/* Search Trigger */}
             <button 
@@ -174,7 +216,7 @@ const Header = ({ onNavigateCategory }) => {
               aria-label="Search items"
               title="Search collection"
             >
-              <Search size={19} />
+              <Search size={18} />
             </button>
 
             {/* Wishlist Trigger */}
@@ -185,14 +227,14 @@ const Header = ({ onNavigateCategory }) => {
               title="Saved items"
             >
               <div className="icon-with-badge">
-                <Heart size={19} />
+                <Heart size={18} />
                 {wishlist.length > 0 && (
                   <span className="action-badge-count">{wishlist.length}</span>
                 )}
               </div>
             </button>
 
-            {/* Cart Trigger (Sleek luxury icon button with badge) */}
+            {/* Cart Trigger */}
             <button 
               className="action-icon-btn cart-icon-btn"
               onClick={() => setIsCartOpen(true)}
@@ -200,7 +242,7 @@ const Header = ({ onNavigateCategory }) => {
               title="View Shopping Bag"
             >
               <div className="icon-with-badge">
-                <ShoppingBag size={19} />
+                <ShoppingBag size={18} />
                 {totalCartCount > 0 && (
                   <span className="action-badge-count cart-badge">{totalCartCount}</span>
                 )}
@@ -243,9 +285,9 @@ const Header = ({ onNavigateCategory }) => {
                           <MapPin size={15} />
                           <span>Saved Addresses</span>
                         </button>
-                        <button onClick={() => handleOpenAccountTab('perks')}>
-                          <Award size={15} />
-                          <span>Privé Perks ({user.loyaltyPoints} pts)</span>
+                        <button onClick={() => handleOpenAccountTab('profile')}>
+                          <UserIcon size={15} />
+                          <span>Profile & Details</span>
                         </button>
                       </div>
 
@@ -265,7 +307,7 @@ const Header = ({ onNavigateCategory }) => {
                   title="Sign In / Register"
                   aria-label="Sign In"
                 >
-                  <UserIcon size={19} />
+                  <UserIcon size={18} />
                 </button>
               )}
             </div>
@@ -273,13 +315,12 @@ const Header = ({ onNavigateCategory }) => {
         </div>
       </nav>
 
-
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="mobile-menu-drawer">
           <div className="mobile-menu-header">
             <span className="brand-name">OLIVÉRA</span>
-            <button onClick={() => setMobileMenuOpen(false)} className="close-menu-btn">
+            <button onClick={() => setMobileMenuOpen(false)} className="close-menu-btn" aria-label="Close menu">
               <X size={22} />
             </button>
           </div>
@@ -293,13 +334,13 @@ const Header = ({ onNavigateCategory }) => {
                 </div>
                 <div className="mobile-user-text">
                   <span className="name">{user.name}</span>
-                  <span className="tier">{user.tier} &bull; {user.loyaltyPoints} Points</span>
+                  <span className="tier">{user.tier} &bull; Member</span>
                 </div>
-                <button className="btn btn-sm btn-outline-olive">My Profile</button>
+                <button className="btn btn-sm btn-outline-olive">Profile</button>
               </div>
             ) : (
               <div className="mobile-signin-prompt">
-                <p>Access exclusive capsule drops & orders</p>
+                <p>Sign in to track orders & saved items</p>
                 <div className="mobile-auth-btns">
                   <button 
                     className="btn btn-primary btn-sm"
@@ -308,7 +349,7 @@ const Header = ({ onNavigateCategory }) => {
                     Sign In
                   </button>
                   <button 
-                    className="btn btn-outline-olive btn-sm"
+                    className="btn btn-cream btn-sm"
                     onClick={() => handleAuthClick('register')}
                   >
                     Register
@@ -319,14 +360,44 @@ const Header = ({ onNavigateCategory }) => {
           </div>
 
           <div className="mobile-menu-links">
-            <button onClick={() => handleNavClick('All')}>All Collection</button>
-            <button onClick={() => handleNavClick('Women')}>Women’s Atelier</button>
-            <button onClick={() => handleNavClick('Men')}>Men’s Sartorial</button>
-            <button onClick={() => handleNavClick('Co-ords')}>Linen & Co-ords</button>
-            <button onClick={() => handleNavClick('Festive')}>Festive Occasion</button>
-            <a href="#lookbook" onClick={() => setMobileMenuOpen(false)}>The Editorial Edit</a>
-            <button onClick={() => handleNavClick('Sale')} className="mobile-sale-link">
-              Autumn Sale (Up to 25% OFF)
+            <button 
+              className={currentPage === 'home' ? 'is-active' : ''} 
+              onClick={() => handlePageClick('home')}
+            >
+              Home
+            </button>
+            <button 
+              className={currentPage === 'shop' ? 'is-active' : ''} 
+              onClick={() => handlePageClick('shop')}
+            >
+              Shop All Collection
+            </button>
+            <div className="mobile-sub-cats">
+              <span onClick={() => handleCategoryClick('Women')}>&bull; Women's Atelier</span>
+              <span onClick={() => handleCategoryClick('Men')}>&bull; Men's Sartorial</span>
+              <span onClick={() => handleCategoryClick('Co-ords')}>&bull; Linen & Co-ords</span>
+              <span onClick={() => handleCategoryClick('Sale')}>&bull; Seasonal Sale</span>
+            </div>
+            <button 
+              className={`articles-mobile-link ${currentPage === 'articles' ? 'is-active' : ''}`}
+              onClick={() => handlePageClick('articles')}
+            >
+              <div className="mobile-link-with-badge">
+                <span>Articles & Journal</span>
+                <span className="mobile-badge-new">New</span>
+              </div>
+            </button>
+            <button 
+              className={currentPage === 'about' ? 'is-active' : ''} 
+              onClick={() => handlePageClick('about')}
+            >
+              About the Atelier
+            </button>
+            <button 
+              className={currentPage === 'contact' ? 'is-active' : ''} 
+              onClick={() => handlePageClick('contact')}
+            >
+              Contact & Concierge
             </button>
             <button 
               className="mobile-track-link"
@@ -349,6 +420,16 @@ const Header = ({ onNavigateCategory }) => {
                 <option value="USD">USD ($)</option>
               </select>
             </div>
+            <div className="currency-selector">
+              <span>Typography: </span>
+              <select 
+                value={fontTheme} 
+                onChange={(e) => handleFontChange(e.target.value)}
+              >
+                <option value="editorial">Editorial Serif</option>
+                <option value="clean-sans">Modern Sans</option>
+              </select>
+            </div>
             <p className="mobile-concierge">Concierge: +92 321 OLIVÉRA</p>
           </div>
         </div>
@@ -358,4 +439,3 @@ const Header = ({ onNavigateCategory }) => {
 };
 
 export default Header;
-

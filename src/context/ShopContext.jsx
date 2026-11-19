@@ -93,8 +93,8 @@ const defaultDemoUser = {
   name: 'Fatima Zahra',
   email: 'fatima.zahra@example.com',
   phone: '0321-9876543',
-  tier: 'VIP Gold Member',
-  loyaltyPoints: 850,
+  tier: 'Atelier Client',
+  stylePreference: 'Relaxed Tailoring & Pure Linens',
   memberSince: '2024',
   addresses: [
     {
@@ -292,7 +292,7 @@ export const ShopProvider = ({ children }) => {
   };
 
   // User Auth functions
-  const login = (email, password) => {
+  const login = (email) => {
     // Demo login simulator
     const nameFromEmail = email.split('@')[0];
     const capitalizedName = nameFromEmail.charAt(0).toUpperCase() + nameFromEmail.slice(1);
@@ -301,8 +301,8 @@ export const ShopProvider = ({ children }) => {
       name: email === 'fatima.zahra@example.com' ? 'Fatima Zahra' : capitalizedName,
       email: email,
       phone: '0321-9876543',
-      tier: 'VIP Gold Member',
-      loyaltyPoints: 850,
+      tier: 'Atelier Client',
+      stylePreference: 'Relaxed Tailoring & Pure Linens',
       memberSince: '2024',
       addresses: defaultDemoUser.addresses,
       savedCards: defaultDemoUser.savedCards
@@ -318,15 +318,24 @@ export const ShopProvider = ({ children }) => {
       name: name.trim(),
       email: email.trim(),
       phone: phone || '0300-0000000',
-      tier: 'VIP Privilege Member',
-      loyaltyPoints: 200, // 200 welcome points
+      tier: 'Atelier Client',
+      stylePreference: 'Classic Sartorial',
       memberSince: '2026',
       addresses: [],
       savedCards: []
     };
     setUser(newUser);
     setIsAuthModalOpen(false);
-    showToast(`Welcome to OLIVÉRA Atelier, ${newUser.name}! +200 Welcome Points added.`, 'success');
+    showToast(`Welcome to OLIVÉRA Atelier, ${newUser.name}!`, 'success');
+  };
+
+  const updateUserProfile = (updatedFields) => {
+    if (!user) return;
+    setUser((prev) => ({
+      ...prev,
+      ...updatedFields
+    }));
+    showToast('Client profile updated successfully.', 'success');
   };
 
   const logout = () => {
@@ -381,15 +390,6 @@ export const ShopProvider = ({ children }) => {
     };
 
     setOrders((prev) => [newOrder, ...prev]);
-
-    // Award loyalty points to user (1 point per Rs. 100 spent)
-    if (user) {
-      const earnedPoints = Math.round(newOrder.total / 100);
-      setUser((prev) => ({
-        ...prev,
-        loyaltyPoints: (prev.loyaltyPoints || 0) + earnedPoints
-      }));
-    }
 
     return newOrder;
   };
@@ -611,6 +611,7 @@ export const ShopProvider = ({ children }) => {
         login,
         register,
         logout,
+        updateUserProfile,
         addSavedAddress,
         addSavedCard,
         isAuthModalOpen,

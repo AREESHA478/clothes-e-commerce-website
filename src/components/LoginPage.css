@@ -1,0 +1,235 @@
+/* ===================================================================
+   DEDICATED LOGIN & SIGN UP PAGE - OLIVÉRA ATELIER
+   Quiet Luxury Split-Screen Page Aesthetic & 100% Mobile Responsive
+   =================================================================== */
+
+.auth-page-root {
+  min-height: calc(100vh - 80px);
+  background-color: var(--bg-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px 80px;
+}
+
+.auth-page-container {
+  width: 100%;
+  max-width: 1040px;
+  background: #ffffff;
+  border-radius: var(--radius-md);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 1fr 1.25fr;
+  min-height: 620px;
+}
+
+/* Left Editorial Showcase (Desktop Only) */
+.auth-page-showcase {
+  position: relative;
+  background-color: var(--olive-900);
+  color: #FAF9F6;
+  padding: 50px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+
+.auth-page-bg-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.36;
+  filter: saturate(0.9) contrast(1.05);
+}
+
+.auth-page-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(20,24,20,0.3) 0%, rgba(20,24,20,0.85) 100%);
+}
+
+.auth-page-showcase-inner {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.auth-page-seal {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+  font-weight: 600;
+}
+
+.auth-page-body-copy {
+  margin: auto 0;
+  padding: 30px 0;
+}
+
+.auth-page-main-heading {
+  font-family: var(--font-serif);
+  font-size: 2.2rem;
+  font-weight: 400;
+  line-height: 1.2;
+  color: #FAF9F6;
+  margin-bottom: 14px;
+}
+
+.auth-page-main-heading em {
+  font-style: italic;
+  font-weight: 300;
+  color: var(--gold-200);
+}
+
+.auth-page-quote {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(250, 249, 246, 0.85);
+  border-left: 2px solid var(--gold-400);
+  padding-left: 14px;
+  margin-bottom: 24px;
+  font-style: italic;
+}
+
+.auth-page-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.auth-page-perk-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.82rem;
+  color: rgba(250, 249, 246, 0.9);
+}
+
+.auth-page-perk-item svg {
+  color: var(--gold-300);
+  flex-shrink: 0;
+}
+
+.auth-page-footer-tag {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(250, 249, 246, 0.55);
+}
+
+/* Right Form Section */
+.auth-page-form-wrap {
+  padding: 48px 44px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #ffffff;
+}
+
+.auth-page-breadcrumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: var(--text-light);
+  margin-bottom: 16px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+  transition: color var(--transition-fast);
+}
+
+.auth-page-breadcrumb:hover {
+  color: var(--olive-800);
+}
+
+/* ================= RESPONSIVE ADJUSTMENTS ================= */
+
+@media (max-width: 900px) {
+  .auth-page-container {
+    grid-template-columns: 1fr;
+    max-width: 580px;
+    min-height: auto;
+  }
+
+  .auth-page-showcase {
+    display: none; /* Hide heavy picture on tablet & mobile so form is instantly visible */
+  }
+
+  .auth-page-form-wrap {
+    padding: 36px 30px;
+  }
+}
+
+@media (max-width: 540px) {
+  .auth-page-root {
+    padding: 16px 12px 60px;
+    min-height: auto;
+  }
+
+  .auth-page-container {
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .auth-page-form-wrap {
+    padding: 24px 16px;
+  }
+
+  .auth-form-title {
+    font-size: 1.6rem !important;
+  }
+
+  .auth-form-desc {
+    font-size: 0.82rem !important;
+  }
+
+  .auth-vip-demo-card {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    padding: 12px !important;
+  }
+
+  .btn-vip-instant {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 10px 14px !important;
+  }
+
+  .auth-two-cols {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+
+  .auth-social-row {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+
+  .auth-input-shell input {
+    font-size: 16px !important; /* Critical: Stops iOS auto-zoom */
+    padding: 13px 40px 13px 42px !important;
+    min-height: 48px !important;
+  }
+
+  .btn-auth-primary {
+    min-height: 48px !important;
+  }
+}

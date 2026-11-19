@@ -1,5 +1,5 @@
 import React from 'react';
-import { Truck, ShieldCheck, RefreshCw, Headphones, Award } from 'lucide-react';
+import { Truck, RefreshCw, Headphones, Award } from 'lucide-react';
 import './FeaturesSection.css';
 
 const FeaturesSection = () => {

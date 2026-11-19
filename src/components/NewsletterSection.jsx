@@ -18,7 +18,7 @@ const NewsletterSection = () => {
     }
 
     setIsSubscribed(true);
-    showToast('Welcome to OLIVÉRA Privé! Your 10% discount is unlocked.', 'success');
+    showToast('Welcome to OLIVÉRA Atelier! Your 10% discount is unlocked.', 'success');
 
     // Trigger subtle confetti burst
     try {
@@ -48,7 +48,7 @@ const NewsletterSection = () => {
 
           <div className="newsletter-badge">
             <Sparkles size={14} />
-            <span>The Privé Circle</span>
+            <span>The Atelier Circle</span>
           </div>
 
           <h2 className="newsletter-title">

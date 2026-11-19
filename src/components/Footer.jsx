@@ -4,13 +4,11 @@ import {
   ArrowUp, 
   MapPin, 
   Mail, 
-  Phone,
-  ShieldCheck,
-  CreditCard
+  Phone
 } from 'lucide-react';
 import './Footer.css';
 
-const Footer = ({ onSelectCategory }) => {
+const Footer = ({ onNavigatePage, onSelectCategory }) => {
   const { 
     setIsSizeGuideOpen, 
     setIsOrderTrackingOpen, 
@@ -19,9 +17,21 @@ const Footer = ({ onSelectCategory }) => {
     user 
   } = useShop();
 
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleNavPage = (pageName) => {
+    if (onNavigatePage) {
+      onNavigatePage(pageName);
+    }
+    scrollToTop();
+  };
+
+  const handleCategory = (cat) => {
+    if (onSelectCategory) {
+      onSelectCategory(cat);
+    }
   };
 
   return (
@@ -31,80 +41,87 @@ const Footer = ({ onSelectCategory }) => {
         <div className="footer-grid">
           {/* Column 1: Brand Lore */}
           <div className="footer-col brand-col">
-            <div className="footer-brand">
+            <div className="footer-brand" onClick={() => handleNavPage('home')}>
               <span className="brand-name">OLIVÉRA</span>
               <span className="brand-tagline">ATELIER &bull; COUTURE</span>
             </div>
 
             <p className="footer-bio">
-              Founded on the belief that everyday clothing should possess quiet majesty. 
-              We craft contemporary garments from European flax, raw handloom silk, and 
+              Founded on the belief that everyday apparel should possess quiet majesty. 
+              We craft contemporary garments from Normandy flax linen, raw handloom silk, and 
               organic cotton in signature olive green and warm cream palettes.
             </p>
 
             <div className="footer-contact-items">
               <div className="contact-row">
-                <MapPin size={16} className="contact-icon" />
-                <span>Flagship Atelier: 12-C Gulberg III, Lahore, Pakistan</span>
+                <MapPin size={15} className="contact-icon" />
+                <span>12-C Gulberg III, M.M. Alam Road, Lahore</span>
               </div>
               <div className="contact-row">
-                <Phone size={16} className="contact-icon" />
-                <span>Client Concierge: +92 321 OLIVÉRA (654-8372)</span>
+                <Phone size={15} className="contact-icon" />
+                <span>+92 321 OLIVÉRA (654-8372)</span>
               </div>
               <div className="contact-row">
-                <Mail size={16} className="contact-icon" />
+                <Mail size={15} className="contact-icon" />
                 <span>concierge@olivera-couture.com</span>
               </div>
             </div>
-
-            <div className="footer-social-links">
-              <a href="#instagram" className="social-icon" aria-label="Instagram">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
-                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
-                  <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
-                </svg>
-              </a>
-              <a href="#facebook" className="social-icon" aria-label="Facebook">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
-                </svg>
-              </a>
-              <a href="#twitter" className="social-icon" aria-label="Twitter">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-                  <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-                </svg>
-              </a>
-            </div>
           </div>
 
-          {/* Column 2: Collections */}
+          {/* Column 2: Navigation & Pages */}
           <div className="footer-col">
-            <h4 className="footer-heading">Collections</h4>
+            <h4 className="footer-heading">Explore Pages</h4>
             <ul className="footer-links">
               <li>
-                <button onClick={() => onSelectCategory('Women')}>Women’s Atelier</button>
+                <button onClick={() => handleNavPage('home')}>Home</button>
               </li>
               <li>
-                <button onClick={() => onSelectCategory('Men')}>Men’s Sartorial</button>
+                <button onClick={() => handleNavPage('shop')}>Shop Catalog</button>
               </li>
               <li>
-                <button onClick={() => onSelectCategory('Co-ords')}>Linen & Co-ord Sets</button>
+                <button onClick={() => handleNavPage('articles')} className="footer-articles-link">
+                  Articles & Journal
+                  <span className="footer-new-badge">New</span>
+                </button>
               </li>
               <li>
-                <button onClick={() => onSelectCategory('Outerwear')}>Safari Trench & Jackets</button>
+                <button onClick={() => handleNavPage('about')}>About the Atelier</button>
               </li>
               <li>
-                <button onClick={() => onSelectCategory('Festive')}>Festive Occasion Wear</button>
+                <button onClick={() => handleNavPage('contact')}>Contact & Concierge</button>
               </li>
               <li>
-                <button onClick={() => onSelectCategory('Sale')}>Seasonal Archive Sale</button>
+                <button onClick={() => setIsOrderTrackingOpen(true)}>Track Consignment</button>
               </li>
             </ul>
           </div>
 
-          {/* Column 3: Customer Care & Guides */}
+          {/* Column 3: Collections */}
+          <div className="footer-col">
+            <h4 className="footer-heading">Collections</h4>
+            <ul className="footer-links">
+              <li>
+                <button onClick={() => handleCategory('Women')}>Women’s Atelier</button>
+              </li>
+              <li>
+                <button onClick={() => handleCategory('Men')}>Men’s Sartorial</button>
+              </li>
+              <li>
+                <button onClick={() => handleCategory('Co-ords')}>Linen & Co-ord Sets</button>
+              </li>
+              <li>
+                <button onClick={() => handleCategory('Outerwear')}>Safari Trench & Jackets</button>
+              </li>
+              <li>
+                <button onClick={() => handleCategory('Festive')}>Festive Occasion Wear</button>
+              </li>
+              <li>
+                <button onClick={() => handleCategory('Sale')}>Seasonal Archive Sale</button>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Client Services & Boutiques */}
           <div className="footer-col">
             <h4 className="footer-heading">Client Services</h4>
             <ul className="footer-links">
@@ -112,45 +129,20 @@ const Footer = ({ onSelectCategory }) => {
                 <button onClick={() => setIsSizeGuideOpen(true)}>Bespoke Sizing Guide</button>
               </li>
               <li>
-                <button onClick={() => setIsOrderTrackingOpen(true)}>Track Express Dispatch</button>
-              </li>
-              <li>
                 <button onClick={() => user ? setIsAccountOpen(true) : setIsAuthModalOpen(true)}>
-                  {user ? 'My Orders & Atelier Profile' : 'Privé Member Sign In'}
+                  {user ? 'My Orders & Atelier Profile' : 'Member Sign In'}
                 </button>
               </li>
               <li>
-                <a href="#exchanges">30-Day Doorstep Exchange Policy</a>
+                <button onClick={() => handleNavPage('contact')}>30-Day Doorstep Exchange</button>
               </li>
               <li>
-                <a href="#linen-care">Linen & Silk Garment Care</a>
+                <button onClick={() => handleNavPage('articles')}>Fabric Care & Longevity</button>
               </li>
               <li>
-                <a href="#sustainability">Biodegradable Packaging & Ethics</a>
+                <button onClick={() => handleNavPage('about')}>Sustainable Craft & Ethics</button>
               </li>
             </ul>
-          </div>
-
-          {/* Column 4: Flagship Boutiques */}
-          <div className="footer-col">
-            <h4 className="footer-heading">Flagship Boutiques</h4>
-            <div className="boutique-list">
-              <div className="boutique-item">
-                <strong className="boutique-city">Lahore Atelier</strong>
-                <p>12-C Gulberg III, M.M. Alam Road</p>
-                <span className="boutique-hours">Mon - Sat: 11:00 AM - 10:00 PM</span>
-              </div>
-              <div className="boutique-item">
-                <strong className="boutique-city">Karachi Salon</strong>
-                <p>Block 4, Clifton, Marine Drive</p>
-                <span className="boutique-hours">Daily: 12:00 PM - 11:00 PM</span>
-              </div>
-              <div className="boutique-item">
-                <strong className="boutique-city">Islamabad Suite</strong>
-                <p>Beverly Centre, Blue Area</p>
-                <span className="boutique-hours">Mon - Sat: 11:30 AM - 9:30 PM</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -159,7 +151,7 @@ const Footer = ({ onSelectCategory }) => {
       <div className="footer-bottom">
         <div className="container footer-bottom-content">
           <p className="copyright-text">
-            &copy; 2026 OLIVÉRA ATELIER LTD. All rights reserved. Handcrafted with reverence for natural fibers.
+            &copy; 2026 OLIVÉRA ATELIER. All rights reserved. Handcrafted with reverence for natural fibers.
           </p>
 
           <div className="payment-badges-row">
@@ -171,7 +163,7 @@ const Footer = ({ onSelectCategory }) => {
           </div>
 
           <button onClick={scrollToTop} className="scroll-top-btn" title="Back to top">
-            <ArrowUp size={16} />
+            <ArrowUp size={15} />
             <span>Top</span>
           </button>
         </div>

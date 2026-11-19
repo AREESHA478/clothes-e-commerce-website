@@ -12,7 +12,6 @@ import {
   ArrowRight, 
   Printer, 
   ShoppingBag,
-  Sparkles,
   Lock,
   Copy,
   Check
@@ -28,7 +27,6 @@ const CheckoutModal = () => {
     cartSubtotal, 
     discountAmount, 
     standardShippingCost, 
-    cartTotal, 
     appliedCoupon, 
     formatPrice, 
     clearCart,
@@ -39,8 +37,6 @@ const CheckoutModal = () => {
     showToast,
     user
   } = useShop();
-
-  if (!isCheckoutOpen) return null;
 
   const [step, setStep] = useState(1); // 1: Shipping Info, 2: Payment, 3: Confirmation
   
@@ -193,6 +189,8 @@ const CheckoutModal = () => {
   const handlePrint = () => {
     window.print();
   };
+
+  if (!isCheckoutOpen) return null;
 
   return (
     <div className="checkout-overlay overlay-backdrop" onClick={() => setIsCheckoutOpen(false)}>

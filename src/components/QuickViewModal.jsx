@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useShop } from '../context/ShopContext';
 import { 
   X, 
@@ -6,21 +7,16 @@ import {
   ShoppingBag, 
   Star, 
   Ruler, 
-  Truck, 
-  ShieldCheck, 
   ChevronDown, 
   ChevronUp, 
-  Check,
   Plus,
-  Minus,
-  Sparkles
+  Minus
 } from 'lucide-react';
 import './QuickViewModal.css';
 
-const QuickViewModal = () => {
+// Subcomponent that mounts fresh whenever a new product is selected
+const QuickViewModalContent = ({ product, onClose }) => {
   const { 
-    quickViewProduct, 
-    setQuickViewProduct, 
     addToCart, 
     toggleWishlist, 
     isWishlisted, 
@@ -32,40 +28,36 @@ const QuickViewModal = () => {
     user
   } = useShop();
 
-  if (!quickViewProduct) return null;
-
   const [activeImageIndex, setActiveImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(
-    quickViewProduct.sizes ? quickViewProduct.sizes[0] : 'Standard'
+    product.sizes && product.sizes.length > 0 ? product.sizes[0] : 'Standard'
   );
   const [selectedColor, setSelectedColor] = useState(
-    quickViewProduct.colors && quickViewProduct.colors[0] 
-      ? quickViewProduct.colors[0].name 
-      : 'Default'
+    product.colors && product.colors.length > 0 ? product.colors[0].name : 'Default'
   );
   const [quantity, setQuantity] = useState(1);
-  const [openAccordion, setOpenAccordion] = useState('details'); // 'details', 'shipping', 'care', 'reviews'
+  const [openAccordion, setOpenAccordion] = useState('details');
 
   // Reviews state
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState('');
 
-  const isSaved = isWishlisted(quickViewProduct.id);
+  const isSaved = isWishlisted(product.id);
 
   const handleAddToCart = () => {
-    addToCart(quickViewProduct, selectedSize, selectedColor, quantity);
+    addToCart(product, selectedSize, selectedColor, quantity);
   };
 
   const handleBuyNow = () => {
-    addToCart(quickViewProduct, selectedSize, selectedColor, quantity);
-    setQuickViewProduct(null);
+    addToCart(product, selectedSize, selectedColor, quantity);
+    onClose();
     setIsCheckoutOpen(true);
   };
 
   const handleSubmitReview = (e) => {
     e.preventDefault();
     if (!reviewComment.trim()) return;
-    addProductReview(quickViewProduct.id, {
+    addProductReview(product.id, {
       author: user ? user.name : 'Valued Client',
       rating: reviewRating,
       comment: reviewComment.trim()
@@ -73,14 +65,13 @@ const QuickViewModal = () => {
     setReviewComment('');
   };
 
-
   return (
-    <div className="quickview-overlay overlay-backdrop" onClick={() => setQuickViewProduct(null)}>
+    <div className="quickview-overlay" onClick={onClose}>
       <div className="quickview-modal-content" onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
         <button 
           className="modal-close-btn"
-          onClick={() => setQuickViewProduct(null)}
+          onClick={onClose}
           aria-label="Close modal"
         >
           <X size={22} />
@@ -91,21 +82,21 @@ const QuickViewModal = () => {
           <div className="quickview-gallery">
             <div className="main-display-frame">
               <img 
-                src={quickViewProduct.images[activeImageIndex] || quickViewProduct.images[0]} 
-                alt={quickViewProduct.name} 
+                src={(product.images && product.images[activeImageIndex]) || product.images?.[0] || ''} 
+                alt={product.name} 
                 className="main-display-img"
               />
-              {quickViewProduct.discount && (
+              {product.discount && (
                 <span className="badge badge-sale modal-discount-pill">
-                  {quickViewProduct.discount}
+                  {product.discount}
                 </span>
               )}
             </div>
 
             {/* Thumbnail selector */}
-            {quickViewProduct.images.length > 1 && (
+            {product.images && product.images.length > 1 && (
               <div className="gallery-thumbnails">
-                {quickViewProduct.images.map((img, idx) => (
+                {product.images.map((img, idx) => (
                   <button
                     key={idx}
                     className={`thumb-btn ${activeImageIndex === idx ? 'thumb-active' : ''}`}
@@ -122,42 +113,42 @@ const QuickViewModal = () => {
           <div className="quickview-info">
             <div className="quickview-category-row">
               <span className="quickview-cat-badge">
-                {quickViewProduct.gender} &bull; {quickViewProduct.category}
+                {product.gender} &bull; {product.category}
               </span>
               <div className="quickview-ratings">
                 <Star size={15} fill="#c5a059" color="#c5a059" />
-                <span className="rating-score">{quickViewProduct.rating}</span>
-                <span className="rating-reviews">({quickViewProduct.reviewsCount} reviews)</span>
+                <span className="rating-score">{product.rating}</span>
+                <span className="rating-reviews">({product.reviewsCount} reviews)</span>
               </div>
             </div>
 
-            <h2 className="quickview-title">{quickViewProduct.name}</h2>
+            <h2 className="quickview-title">{product.name}</h2>
 
             {/* Price Row */}
             <div className="quickview-price-row">
-              <span className="quickview-price">{formatPrice(quickViewProduct.price)}</span>
-              {quickViewProduct.originalPrice && (
+              <span className="quickview-price">{formatPrice(product.price)}</span>
+              {product.originalPrice && (
                 <span className="quickview-original-price">
-                  {formatPrice(quickViewProduct.originalPrice)}
+                  {formatPrice(product.originalPrice)}
                 </span>
               )}
-              {quickViewProduct.isSale && (
+              {product.isSale && (
                 <span className="savings-tag">Special Autumn Price</span>
               )}
             </div>
 
             <p className="quickview-description">
-              {quickViewProduct.description}
+              {product.description}
             </p>
 
             {/* Color Swatch Selector */}
-            {quickViewProduct.colors && quickViewProduct.colors.length > 0 && (
+            {product.colors && product.colors.length > 0 && (
               <div className="modal-option-group">
                 <label className="option-label">
                   Selected Shade: <strong>{selectedColor}</strong>
                 </label>
                 <div className="modal-color-swatches">
-                  {quickViewProduct.colors.map((c) => (
+                  {product.colors.map((c) => (
                     <button
                       key={c.name}
                       className={`modal-color-circle ${selectedColor === c.name ? 'is-active' : ''}`}
@@ -171,7 +162,7 @@ const QuickViewModal = () => {
             )}
 
             {/* Size Selector + Size Guide Link */}
-            {quickViewProduct.sizes && (
+            {product.sizes && product.sizes.length > 0 && (
               <div className="modal-option-group">
                 <div className="size-label-row">
                   <label className="option-label">
@@ -187,7 +178,7 @@ const QuickViewModal = () => {
                 </div>
 
                 <div className="modal-size-pills">
-                  {quickViewProduct.sizes.map((s) => (
+                  {product.sizes.map((s) => (
                     <button
                       key={s}
                       className={`modal-size-pill ${selectedSize === s ? 'size-active' : ''}`}
@@ -230,7 +221,7 @@ const QuickViewModal = () => {
 
               <button 
                 className={`modal-wishlist-toggle ${isSaved ? 'is-saved heart-pop' : ''}`}
-                onClick={() => toggleWishlist(quickViewProduct.id)}
+                onClick={() => toggleWishlist(product.id)}
                 title={isSaved ? 'In Wishlist' : 'Add to Wishlist'}
               >
                 <Heart size={20} fill={isSaved ? '#3A4D39' : 'none'} color={isSaved ? '#3A4D39' : '#1c261b'} />
@@ -242,7 +233,7 @@ const QuickViewModal = () => {
               className="btn btn-cream btn-buy-now"
               onClick={handleBuyNow}
             >
-              <span>Instant Checkout &bull; {formatPrice(quickViewProduct.price * quantity)}</span>
+              <span>Instant Checkout &bull; {formatPrice(product.price * quantity)}</span>
             </button>
 
             {/* Accordion Tabs */}
@@ -259,8 +250,8 @@ const QuickViewModal = () => {
                 {openAccordion === 'details' && (
                   <div className="accordion-content animate-fade">
                     <ul className="details-bullet-list">
-                      {quickViewProduct.details ? (
-                        quickViewProduct.details.map((d, i) => (
+                      {product.details ? (
+                        product.details.map((d, i) => (
                           <li key={i}>{d}</li>
                         ))
                       ) : (
@@ -302,9 +293,8 @@ const QuickViewModal = () => {
                 </button>
                 {openAccordion === 'reviews' && (
                   <div className="accordion-content reviews-accordion-content animate-fade">
-                    {/* Reviews list */}
                     <div className="modal-reviews-list">
-                      {((productReviews && productReviews[quickViewProduct.id]) || [
+                      {((productReviews && productReviews[product.id]) || [
                         {
                           id: 'rev-default-1',
                           author: 'Areeba S.',
@@ -343,7 +333,6 @@ const QuickViewModal = () => {
                       ))}
                     </div>
 
-                    {/* Write a Review Form */}
                     <div className="write-review-card">
                       <h6>Share Your Feedback</h6>
                       <div className="rating-select-row">
@@ -389,5 +378,22 @@ const QuickViewModal = () => {
   );
 };
 
-export default QuickViewModal;
+const QuickViewModal = () => {
+  const { quickViewProduct, setQuickViewProduct } = useShop();
 
+  if (!quickViewProduct) return null;
+
+  const modalElement = (
+    <QuickViewModalContent 
+      key={quickViewProduct.id}
+      product={quickViewProduct} 
+      onClose={() => setQuickViewProduct(null)} 
+    />
+  );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalElement, document.body)
+    : modalElement;
+};
+
+export default QuickViewModal;

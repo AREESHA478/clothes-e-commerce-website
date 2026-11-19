@@ -1,20 +1,21 @@
 /* ===================================================================
-   CATEGORIES SECTION STYLING
+   CATEGORIES SECTION STYLING - MINIMALIST AESTHETIC
    =================================================================== */
 
 .categories-section {
   background-color: var(--bg-primary);
+  padding: 64px 0;
 }
 
 .categories-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
+  gap: 20px;
 }
 
 .category-card {
   position: relative;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   background-color: var(--bg-card);
   border: 1px solid var(--border-subtle);
@@ -25,16 +26,17 @@
 }
 
 .category-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-lg);
-  border-color: var(--olive-400);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--border-medium);
 }
 
 .category-image-wrap {
   position: relative;
   width: 100%;
-  height: 340px;
+  height: 320px;
   overflow: hidden;
+  background-color: var(--cream-100);
 }
 
 .category-img {
@@ -45,59 +47,58 @@
 }
 
 .category-card:hover .category-img {
-  transform: scale(1.08);
+  transform: scale(1.05);
 }
 
 .category-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(28, 38, 27, 0) 40%, rgba(28, 38, 27, 0.5) 100%);
-  opacity: 0.6;
+  background: linear-gradient(180deg, rgba(20, 22, 20, 0) 50%, rgba(20, 22, 20, 0.45) 100%);
+  opacity: 0.5;
   transition: opacity var(--transition-fast);
 }
 
 .category-card:hover .category-overlay {
-  opacity: 0.8;
+  opacity: 0.75;
 }
 
 .category-meta {
-  padding: 20px;
-  background-color: var(--cream-100);
+  padding: 16px 18px;
+  background-color: var(--bg-card);
   border-top: 1px solid var(--border-subtle);
-  flex: 1;
   display: flex;
   flex-direction: column;
 }
 
 .category-count {
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--olive-600);
-  margin-bottom: 6px;
+  color: var(--text-light);
+  margin-bottom: 4px;
 }
 
 .category-title-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .category-name {
   font-family: var(--font-serif);
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--olive-950);
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--text-main);
 }
 
 .category-arrow-icon {
-  width: 32px;
-  height: 32px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
-  background-color: var(--cream-200);
-  color: var(--olive-800);
+  background-color: var(--cream-100);
+  color: var(--text-main);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -105,31 +106,58 @@
 }
 
 .category-card:hover .category-arrow-icon {
-  background-color: var(--olive-700);
-  color: var(--cream-50);
-  transform: rotate(45deg);
+  background-color: var(--olive-900);
+  color: #FAF9F6;
+  transform: translate(2px, -2px);
 }
 
 .category-desc {
-  font-size: 0.84rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
-/* Responsiveness */
 @media (max-width: 1024px) {
   .categories-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 18px;
   }
 }
 
-@media (max-width: 576px) {
+@media (max-width: 640px) {
+  .categories-section {
+    padding: 40px 0;
+  }
   .categories-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
   .category-image-wrap {
-    height: 280px;
+    height: 190px;
+  }
+  .category-meta {
+    padding: 12px 10px;
+  }
+  .category-name {
+    font-size: 0.98rem;
+  }
+  .category-count {
+    font-size: 0.62rem;
+  }
+  .category-desc {
+    display: none;
+  }
+  .category-arrow-icon {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 350px) {
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+  .category-image-wrap {
+    height: 220px;
   }
 }

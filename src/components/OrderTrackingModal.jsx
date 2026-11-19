@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useShop } from '../context/ShopContext';
 import { 
   X, 
@@ -6,13 +7,9 @@ import {
   Truck, 
   Package, 
   CheckCircle2, 
-  Clock, 
   MapPin, 
   PhoneCall, 
   Copy, 
-  ExternalLink,
-  ShieldCheck,
-  Sparkles,
   ArrowRight
 } from 'lucide-react';
 import './OrderTrackingModal.css';
@@ -46,8 +43,8 @@ const OrderTrackingModal = () => {
     }
   };
 
-  return (
-    <div className="tracking-overlay overlay-backdrop" onClick={() => setIsOrderTrackingOpen(false)}>
+  const modalNode = (
+    <div className="tracking-overlay" onClick={() => setIsOrderTrackingOpen(false)}>
       <div className="tracking-modal-card" onClick={(e) => e.stopPropagation()}>
         {/* Modal Header */}
         <div className="tracking-header">
@@ -235,6 +232,10 @@ const OrderTrackingModal = () => {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalNode, document.body)
+    : modalNode;
 };
 
 export default OrderTrackingModal;

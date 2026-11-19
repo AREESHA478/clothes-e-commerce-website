@@ -1,0 +1,562 @@
+/* ===================================================================
+   ARTICLES & JOURNAL PAGE STYLING - MINIMALIST EDITORIAL AESTHETIC
+   =================================================================== */
+
+.articles-page-root {
+  background-color: var(--bg-primary);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+/* Hero Banner */
+.articles-hero-banner {
+  background-color: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  padding: 56px 0 36px;
+}
+
+.articles-header-content {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 36px;
+}
+
+.articles-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--olive-700);
+  background: rgba(255, 255, 255, 0.7);
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--border-subtle);
+  margin-bottom: 16px;
+}
+
+.articles-main-heading {
+  font-family: var(--font-serif);
+  font-size: 3.2rem;
+  font-weight: 400;
+  color: var(--text-main);
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+
+.articles-hero-lead {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+}
+
+/* Controls Bar (Categories + Search) */
+.articles-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.articles-category-pills {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.category-pill-btn {
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  padding: 8px 16px;
+  border-radius: 999px;
+  background-color: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-fast);
+}
+
+.category-pill-btn:hover {
+  background-color: var(--cream-100);
+  color: var(--text-main);
+  border-color: var(--border-medium);
+}
+
+.category-pill-btn.is-active {
+  background-color: var(--olive-800);
+  color: #ffffff;
+  border-color: var(--olive-800);
+}
+
+.articles-search-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ffffff;
+  border: 1px solid var(--border-subtle);
+  padding: 8px 16px;
+  border-radius: 999px;
+  min-width: 260px;
+}
+
+.articles-search-icon {
+  color: var(--text-light);
+}
+
+.articles-search-wrap input {
+  border: none;
+  background: none;
+  outline: none;
+  font-size: 0.86rem;
+  color: var(--text-main);
+  width: 100%;
+}
+
+.clear-search-btn {
+  font-size: 0.72rem;
+  color: var(--text-light);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.clear-search-btn:hover {
+  color: var(--text-main);
+}
+
+/* Container */
+.articles-content-container {
+  padding-top: 48px;
+}
+
+/* Featured Story Section */
+.featured-story-section {
+  margin-bottom: 56px;
+}
+
+.featured-story-card {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all var(--transition-normal);
+  box-shadow: var(--shadow-sm);
+}
+
+.featured-story-card:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--olive-300);
+  transform: translateY(-2px);
+}
+
+.featured-story-media {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: var(--cream-100);
+}
+
+.featured-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.featured-story-card:hover .featured-img {
+  transform: scale(1.03);
+}
+
+.featured-ribbon {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(4px);
+  color: var(--olive-800);
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 6px 12px;
+  border-radius: 999px;
+  box-shadow: var(--shadow-sm);
+}
+
+.featured-story-details {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.story-meta-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.story-category-tag {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--olive-700);
+}
+
+.story-read-time {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.76rem;
+  color: var(--text-light);
+}
+
+.featured-story-title {
+  font-family: var(--font-serif);
+  font-size: 2.15rem;
+  font-weight: 400;
+  line-height: 1.25;
+  color: var(--text-main);
+  margin-bottom: 14px;
+}
+
+.featured-story-excerpt {
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.featured-author-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 18px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.author-avatar-sm {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-copy {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.author-name-text {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.author-role-text {
+  font-size: 0.74rem;
+  color: var(--text-light);
+}
+
+.read-full-story-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--olive-800);
+  background: var(--cream-100);
+  padding: 10px 18px;
+  border-radius: var(--radius-xs);
+  transition: all var(--transition-fast);
+}
+
+.featured-story-card:hover .read-full-story-btn {
+  background: var(--olive-800);
+  color: #ffffff;
+}
+
+/* Articles Cards Grid */
+.articles-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: 32px;
+  margin-bottom: 64px;
+}
+
+.article-card {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: all var(--transition-normal);
+}
+
+.article-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--olive-300);
+  box-shadow: var(--shadow-md);
+}
+
+.article-card-image-wrap {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background-color: var(--cream-100);
+}
+
+.article-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.article-card:hover .article-card-img {
+  transform: scale(1.05);
+}
+
+.article-card-cat-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--olive-800);
+  backdrop-filter: blur(4px);
+}
+
+.article-card-body {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.article-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.74rem;
+  color: var(--text-light);
+  margin-bottom: 10px;
+}
+
+.article-card-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.article-card-title {
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+.article-card-excerpt {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+  flex: 1;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.article-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.article-card-author {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.author-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.author-name-sm {
+  font-size: 0.78rem;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.read-more-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--olive-700);
+  transition: transform var(--transition-fast);
+}
+
+.article-card:hover .read-more-link {
+  transform: translateX(3px);
+  color: var(--olive-900);
+}
+
+/* Empty State */
+.no-articles-found {
+  text-align: center;
+  padding: 60px 20px;
+  background-color: var(--bg-card);
+  border: 1px dashed var(--border-medium);
+  border-radius: var(--radius-md);
+  margin-bottom: 40px;
+}
+
+.empty-book-icon {
+  color: var(--olive-400);
+  margin-bottom: 14px;
+}
+
+.no-articles-found h3 {
+  font-family: var(--font-serif);
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+.no-articles-found p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 20px;
+}
+
+/* Journal Newsletter Banner */
+.journal-newsletter-banner {
+  background-color: var(--cream-100);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 48px 32px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.journal-newsletter-inner {
+  max-width: 580px;
+  margin: 0 auto;
+}
+
+.journal-news-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--olive-700);
+}
+
+.journal-news-title {
+  font-family: var(--font-serif);
+  font-size: 1.8rem;
+  font-weight: 500;
+  color: var(--text-main);
+  margin: 8px 0 12px;
+}
+
+.journal-news-desc {
+  font-size: 0.92rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.journal-news-form {
+  display: flex;
+  gap: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.journal-news-form input {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--border-medium);
+  background-color: #ffffff;
+  font-size: 0.88rem;
+  outline: none;
+}
+
+.journal-news-form input:focus {
+  border-color: var(--olive-700);
+}
+
+@media (max-width: 900px) {
+  .featured-story-card {
+    grid-template-columns: 1fr;
+  }
+  .featured-story-details {
+    padding: 24px;
+  }
+  .articles-main-heading {
+    font-size: 2.1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .articles-hero-banner {
+    padding: 36px 0 24px;
+  }
+  .articles-main-heading {
+    font-size: 1.75rem;
+  }
+  .articles-controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .articles-category-pills {
+    overflow-x: auto;
+    padding-bottom: 6px;
+    flex-wrap: nowrap;
+  }
+  .articles-search-wrap {
+    min-width: 100%;
+  }
+  .articles-cards-grid {
+    grid-template-columns: 1fr;
+  }
+  .journal-news-form {
+    flex-direction: column;
+  }
+}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useShop } from '../context/ShopContext';
-import { ShoppingBag, Sparkles, ArrowRight } from 'lucide-react';
+import { ShoppingBag, Sparkles } from 'lucide-react';
 import './LookbookSection.css';
 
 const LookbookSection = () => {

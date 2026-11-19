@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
-import { ShopProvider } from './context/ShopContext';
+import React, { useState, useEffect } from 'react';
+import { ShopProvider, useShop } from './context/ShopContext';
 import Header from './components/Header';
 import HeroBanner from './components/HeroBanner';
 import CategoriesSection from './components/CategoriesSection';
 import ProductGrid from './components/ProductGrid';
-import LookbookSection from './components/LookbookSection';
+import ProductCard from './components/ProductCard';
+import HomeArticlesSection from './components/HomeArticlesSection';
+import ArticlesPage from './components/ArticlesPage';
+import ArticleReaderModal from './components/ArticleReaderModal';
+import AboutPage from './components/AboutPage';
+import ContactPage from './components/ContactPage';
+import LoginPage from './components/LoginPage';
 import FeaturesSection from './components/FeaturesSection';
-import TestimonialsSection from './components/TestimonialsSection';
 import NewsletterSection from './components/NewsletterSection';
 import Footer from './components/Footer';
 
@@ -22,58 +27,192 @@ import AccountModal from './components/AccountModal';
 import OrderTrackingModal from './components/OrderTrackingModal';
 import MobileBottomNav from './components/MobileBottomNav';
 import ToastNotification from './components/ToastNotification';
+import { articlesData } from './data/articles';
+import { ArrowRight, Sparkles } from 'lucide-react';
 
 const AppContent = () => {
-  const [activeCategory, setActiveCategory] = useState('All');
+  const { products } = useShop();
 
-  const scrollToCatalog = (category = null) => {
-    if (category) {
-      setActiveCategory(category);
+  // Simple Page Navigation State: 'home' | 'shop' | 'articles' | 'about' | 'contact'
+  const [currentPage, setCurrentPage] = useState('home');
+  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeArticleForReader, setActiveArticleForReader] = useState(null);
+
+  // Sync hash routing on mount and hash changes
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '').toLowerCase();
+      if (['home', 'shop', 'articles', 'about', 'contact', 'login', 'register'].includes(hash)) {
+        setCurrentPage(hash);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    };
+
+    if (window.location.hash) {
+      handleHashChange();
     }
-    const catalogEl = document.getElementById('catalog-section');
-    if (catalogEl) {
-      catalogEl.scrollIntoView({ behavior: 'smooth' });
-    }
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
+
+  const navigateToPage = (pageName) => {
+    setCurrentPage(pageName);
+    window.location.hash = pageName;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  const navigateToCategory = (category = 'All') => {
+    setActiveCategory(category);
+    setCurrentPage('shop');
+    window.location.hash = 'shop';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleReadArticle = (article) => {
+    setActiveArticleForReader(article);
+  };
+
+  // Curated featured 4 pieces for the home page showcase
+  const featuredCuratedProducts = products.slice(0, 4);
 
   return (
     <div className="app-root">
       {/* Navigation Header */}
-      <Header onNavigateCategory={scrollToCatalog} />
+      <Header 
+        currentPage={currentPage}
+        onNavigatePage={navigateToPage}
+        onNavigateCategory={navigateToCategory} 
+      />
 
-      <main>
-        {/* Editorial Hero Banner */}
-        <HeroBanner onShopNowClick={() => scrollToCatalog('All')} />
+      <main className="main-content-flow">
+        {/* ================= PAGE 1: HOME ================= */}
+        {currentPage === 'home' && (
+          <div className="page-view animate-fade">
+            {/* Minimalist Aesthetic Hero */}
+            <HeroBanner 
+              onShopNowClick={() => navigateToPage('shop')} 
+              onArticlesClick={() => navigateToPage('articles')}
+            />
 
-        {/* Curated Categories Showcase */}
-        <CategoriesSection onSelectCategory={scrollToCatalog} />
+            {/* Curated Categories Showcase */}
+            <CategoriesSection onSelectCategory={navigateToCategory} />
 
-        {/* Full-Featured Clothes Catalog */}
-        <ProductGrid 
-          activeCategory={activeCategory} 
-          setActiveCategory={setActiveCategory} 
-        />
+            {/* Curated Highlights Section */}
+            <section className="home-curated-showcase container section-padding">
+              <div className="section-header">
+                <span className="section-eyebrow">
+                  <Sparkles size={12} />
+                  Atelier Selection
+                </span>
+                <h2 className="section-title">New In & Curated Essentials</h2>
+                <p className="section-subtitle">
+                  Tailored in micro-runs from certified Normandy flax linen, raw handloom silk, and soft organic cotton.
+                </p>
+              </div>
 
-        {/* Editorial Lookbook Feature */}
-        <LookbookSection />
+              <div className="catalog-products-grid cols-4">
+                {featuredCuratedProducts.map((product) => (
+                  <ProductCard key={product.id} product={product} />
+                ))}
+              </div>
 
-        {/* Brand Guarantees & Features */}
-        <FeaturesSection />
+              <div className="home-view-all-row">
+                <button 
+                  className="btn btn-outline-olive btn-lg"
+                  onClick={() => navigateToPage('shop')}
+                >
+                  <span>Explore Complete Catalog ({products.length} Designs)</span>
+                  <ArrowRight size={16} />
+                </button>
+              </div>
+            </section>
 
-        {/* Client Reviews & Testimonials */}
-        <TestimonialsSection />
+            {/* Editorial Atelier Philosophy Quote Section */}
+            <section className="atelier-quote-section">
+              <div className="container">
+                <div className="atelier-quote-card">
+                  <span className="quote-tagline">Atelier Principle &bull; Mindful Production</span>
+                  <blockquote className="atelier-quote-text">
+                    &ldquo;True elegance is never hurried. We measure each cut not in fast industrial quotas, 
+                    but in decades of enduring grace, breathable comfort, and reverent craftsmanship.&rdquo;
+                  </blockquote>
+                  <div className="atelier-quote-footer">
+                    <span className="quote-author-name">Tariq Mansoor</span>
+                    <span className="quote-author-sub">&bull; Master Pattern Maker &bull; Lahore Atelier</span>
+                  </div>
+                </div>
+              </div>
+            </section>
 
-        {/* VIP Privé Club Newsletter */}
-        <NewsletterSection />
+            {/* Dedicated Editorial Articles / Journal Section Preview */}
+            <HomeArticlesSection 
+              onNavigateArticles={() => navigateToPage('articles')}
+              onReadArticle={handleReadArticle}
+            />
+
+            {/* Brand Guarantees & Features */}
+            <FeaturesSection />
+
+            {/* VIP Newsletter */}
+            <NewsletterSection />
+          </div>
+        )}
+
+        {/* ================= PAGE 2: SHOP ================= */}
+        {currentPage === 'shop' && (
+          <div className="page-view animate-fade">
+            <ProductGrid 
+              activeCategory={activeCategory} 
+              setActiveCategory={setActiveCategory} 
+            />
+          </div>
+        )}
+
+        {/* ================= PAGE 3: ARTICLES (EDITORIAL JOURNAL) ================= */}
+        {currentPage === 'articles' && (
+          <div className="page-view animate-fade">
+            <ArticlesPage 
+              onSelectCategory={navigateToCategory} 
+              onReadArticle={handleReadArticle}
+            />
+          </div>
+        )}
+
+        {/* ================= PAGE 4: ABOUT THE ATELIER ================= */}
+        {currentPage === 'about' && (
+          <div className="page-view animate-fade">
+            <AboutPage onShopClick={() => navigateToPage('shop')} />
+          </div>
+        )}
+
+        {/* ================= PAGE 5: CONTACT & CONCIERGE ================= */}
+        {currentPage === 'contact' && (
+          <div className="page-view animate-fade">
+            <ContactPage />
+          </div>
+        )}
+
+        {/* ================= PAGE 6: AUTHENTICATION (LOGIN & SIGN UP) ================= */}
+        {(currentPage === 'login' || currentPage === 'register') && (
+          <div className="page-view animate-fade">
+            <LoginPage 
+              initialTab={currentPage} 
+              onNavigatePage={navigateToPage} 
+            />
+          </div>
+        )}
       </main>
 
       {/* Footer */}
-      <Footer onSelectCategory={scrollToCatalog} />
+      <Footer 
+        onNavigatePage={navigateToPage} 
+        onSelectCategory={navigateToCategory} 
+      />
 
-      {/* Drawers, Modals & Notifications */}
+      {/* Global Drawers, Modals & Notifications */}
       <CartDrawer />
       <WishlistDrawer />
-      <QuickViewModal />
       <CheckoutModal />
       <SizeGuideModal />
       <SearchModal />
@@ -82,12 +221,27 @@ const AppContent = () => {
       <OrderTrackingModal />
       <ToastNotification />
 
+      {/* Full Article Reader Modal (opens when clicked from homepage, articles page, or related stories) */}
+      {activeArticleForReader && (
+        <ArticleReaderModal 
+          article={activeArticleForReader}
+          onClose={() => setActiveArticleForReader(null)}
+          onSelectArticle={(art) => setActiveArticleForReader(art)}
+          allArticles={articlesData}
+        />
+      )}
+
+      {/* Global Quick View Product Modal (Topmost priority - opens on top of all pages and article reader) */}
+      <QuickViewModal />
+
       {/* Responsive Mobile Bottom Navigation Bar */}
-      <MobileBottomNav onHomeClick={() => scrollToCatalog('All')} />
+      <MobileBottomNav 
+        currentPage={currentPage}
+        onNavigatePage={navigateToPage} 
+      />
     </div>
   );
 };
-
 
 function App() {
   return (

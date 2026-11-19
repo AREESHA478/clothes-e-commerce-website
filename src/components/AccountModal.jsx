@@ -1,21 +1,20 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useShop } from '../context/ShopContext';
 import { 
   X, 
   Package, 
   MapPin, 
   CreditCard, 
-  Award, 
   LogOut, 
-  ChevronRight, 
-  ExternalLink, 
   Truck, 
   CheckCircle2, 
   Clock, 
   Plus, 
-  Sparkles,
   ShieldCheck,
-  Smartphone
+  User,
+  Save,
+  ArrowRight
 } from 'lucide-react';
 import './AccountModal.css';
 
@@ -30,18 +29,28 @@ const AccountModal = () => {
     orders, 
     formatPrice, 
     trackOrderById,
+    updateUserProfile,
     addSavedAddress,
     addSavedCard
   } = useShop();
 
+  // Profile Form state
+  const [profileForm, setProfileForm] = useState({
+    name: user ? user.name : '',
+    email: user ? user.email : '',
+    phone: user ? user.phone : '',
+    stylePreference: user ? (user.stylePreference || 'Relaxed Tailoring & Normandy Flax') : 'Relaxed Tailoring & Normandy Flax',
+    standardSize: 'M'
+  });
+
   // State for Add Address Form
   const [showAddAddress, setShowAddAddress] = useState(false);
   const [newAddress, setNewAddress] = useState({
-    title: 'Work / Studio',
+    title: 'Home (DHA)',
     fullName: user ? user.name : '',
     address: '',
     city: 'Lahore',
-    postalCode: '',
+    postalCode: '54000',
     phone: user ? user.phone : ''
   });
 
@@ -61,17 +70,28 @@ const AccountModal = () => {
     trackOrderById(orderId);
   };
 
+  const handleProfileSubmit = (e) => {
+    e.preventDefault();
+    if (!profileForm.name.trim()) return;
+    updateUserProfile({
+      name: profileForm.name.trim(),
+      email: profileForm.email.trim(),
+      phone: profileForm.phone.trim(),
+      stylePreference: profileForm.stylePreference
+    });
+  };
+
   const handleSaveAddressSubmit = (e) => {
     e.preventDefault();
-    if (!newAddress.address) return;
+    if (!newAddress.address.trim()) return;
     addSavedAddress(newAddress);
     setShowAddAddress(false);
     setNewAddress({
-      title: 'Work / Studio',
+      title: 'Studio / Office',
       fullName: user.name,
       address: '',
       city: 'Lahore',
-      postalCode: '',
+      postalCode: '54000',
       phone: user.phone
     });
   };
@@ -101,154 +121,175 @@ const AccountModal = () => {
     .toUpperCase()
     .slice(0, 2);
 
-  return (
-    <div className="account-overlay overlay-backdrop" onClick={() => setIsAccountOpen(false)}>
-      <div className="account-modal-card" onClick={(e) => e.stopPropagation()}>
-        {/* Header Profile Summary */}
+  const modalNode = (
+    <div className="account-overlay" onClick={() => setIsAccountOpen(false)}>
+      <div 
+        className="account-modal-card" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+      >
+        {/* Header Section */}
         <div className="account-header">
-          <div className="account-profile-main">
-            <div className="account-avatar">
+          <div className="account-profile-summary">
+            <div className="account-avatar-circle">
               <span>{userInitials}</span>
-              <span className="avatar-badge-vip">★</span>
             </div>
 
-            <div className="account-details">
-              <div className="account-name-row">
-                <h3 className="account-name">{user.name}</h3>
-                <span className="vip-tier-badge">
-                  <Sparkles size={12} />
-                  <span>{user.tier}</span>
-                </span>
+            <div className="account-client-meta">
+              <div className="account-client-name-row">
+                <h3 className="account-client-name">{user.name}</h3>
+                <span className="client-status-badge">Atelier Client</span>
               </div>
-              <p className="account-meta">{user.email} &bull; {user.phone}</p>
-              <div className="points-pill">
-                <span>Atelier Balance: <strong>{user.loyaltyPoints} Points</strong> (Rs. {user.loyaltyPoints * 2} Credit)</span>
-              </div>
+              <p className="account-client-contact">
+                {user.email} &bull; {user.phone} &bull; Member since {user.memberSince || '2024'}
+              </p>
             </div>
           </div>
 
-          <button 
-            className="modal-close-btn"
-            onClick={() => setIsAccountOpen(false)}
-            aria-label="Close Account"
-          >
-            <X size={20} />
-          </button>
+          <div className="account-header-actions">
+            <button 
+              type="button" 
+              className="btn-header-signout"
+              onClick={logout}
+              title="Sign Out"
+            >
+              <LogOut size={14} />
+              <span>Sign Out</span>
+            </button>
+
+            <button 
+              className="account-close-btn"
+              onClick={() => setIsAccountOpen(false)}
+              aria-label="Close Account"
+            >
+              <X size={18} />
+            </button>
+          </div>
         </div>
 
         {/* Tab Navigation */}
-        <div className="account-nav-bar">
+        <div className="account-tabs-bar">
           <button 
-            className={`account-nav-tab ${activeAccountTab === 'orders' ? 'active' : ''}`}
+            type="button"
+            className={`account-tab-btn ${activeAccountTab === 'orders' ? 'is-active' : ''}`}
             onClick={() => setActiveAccountTab('orders')}
           >
-            <Package size={17} />
-            <span>My Orders ({orders.length})</span>
+            <Package size={16} />
+            <span>Orders &amp; Tracking</span>
+            <span className="tab-badge">{orders.length}</span>
           </button>
 
           <button 
-            className={`account-nav-tab ${activeAccountTab === 'addresses' ? 'active' : ''}`}
+            type="button"
+            className={`account-tab-btn ${activeAccountTab === 'profile' ? 'is-active' : ''}`}
+            onClick={() => setActiveAccountTab('profile')}
+          >
+            <User size={16} />
+            <span>Profile &amp; Tailoring</span>
+          </button>
+
+          <button 
+            type="button"
+            className={`account-tab-btn ${activeAccountTab === 'addresses' ? 'is-active' : ''}`}
             onClick={() => setActiveAccountTab('addresses')}
           >
-            <MapPin size={17} />
-            <span>Addresses ({user.addresses ? user.addresses.length : 0})</span>
+            <MapPin size={16} />
+            <span>Delivery Addresses</span>
+            <span className="tab-badge">{user.addresses ? user.addresses.length : 0}</span>
           </button>
 
           <button 
-            className={`account-nav-tab ${activeAccountTab === 'savedCards' ? 'active' : ''}`}
+            type="button"
+            className={`account-tab-btn ${activeAccountTab === 'savedCards' ? 'is-active' : ''}`}
             onClick={() => setActiveAccountTab('savedCards')}
           >
-            <CreditCard size={17} />
+            <CreditCard size={16} />
             <span>Payment Methods</span>
-          </button>
-
-          <button 
-            className={`account-nav-tab ${activeAccountTab === 'perks' ? 'active' : ''}`}
-            onClick={() => setActiveAccountTab('perks')}
-          >
-            <Award size={17} />
-            <span>Privé Perks</span>
+            <span className="tab-badge">{user.savedCards ? user.savedCards.length : 0}</span>
           </button>
         </div>
 
-        {/* Body Content */}
-        <div className="account-body-content">
-          {/* TAB 1: ORDERS */}
+        {/* Body Content Area */}
+        <div className="account-modal-body">
+          {/* ================= TAB 1: ORDERS & TRACKING ================= */}
           {activeAccountTab === 'orders' && (
             <div className="orders-tab-view animate-fade">
+              <div className="dashboard-section-header">
+                <div>
+                  <h4 className="dashboard-section-title">Order History &amp; Dispatch Tracking</h4>
+                  <p className="dashboard-section-subtitle">
+                    Track live parcels, view archival receipts, and inspect order progress.
+                  </p>
+                </div>
+              </div>
+
               {orders.length === 0 ? (
-                <div className="empty-orders-view">
-                  <Package size={48} className="empty-icon" />
+                <div className="empty-orders-card">
+                  <Package size={40} color="#737A73" />
                   <h4>No Orders Found</h4>
-                  <p>You haven't placed an order yet. Explore our curated collection to start shopping.</p>
+                  <p>You haven't placed an order with the atelier yet. Explore our handcrafted collection.</p>
                   <button 
-                    className="btn btn-primary"
+                    className="btn btn-primary btn-sm"
                     onClick={() => setIsAccountOpen(false)}
                   >
-                    Explore Collection
+                    <span>Browse Collection</span>
+                    <ArrowRight size={14} />
                   </button>
                 </div>
               ) : (
-                <div className="orders-list">
+                <div className="orders-flow-list">
                   {orders.map((ord) => {
-                    const statusClass = 
-                      ord.status === 'Delivered' 
-                        ? 'status-delivered' 
-                        : ord.status === 'In Transit' 
-                        ? 'status-transit' 
-                        : 'status-processing';
+                    const isDelivered = ord.status === 'Delivered';
+                    const isInTransit = ord.status === 'In Transit';
+                    const statusClass = isDelivered ? 'delivered' : isInTransit ? 'transit' : 'processing';
 
                     return (
-                      <div key={ord.id} className="order-item-card">
-                        <div className="order-item-top">
-                          <div>
-                            <span className="order-reference-label">Order Ref:</span>
-                            <span className="order-reference-number">{ord.id}</span>
-                            <span className="order-date">&bull; {ord.date}</span>
+                      <div key={ord.id} className="dashboard-order-card">
+                        <div className="order-card-header">
+                          <div className="order-ref-group">
+                            <span>Ref:</span>
+                            <span className="order-ref-bold">{ord.id}</span>
+                            <span className="order-date-text">&bull; {ord.date}</span>
                           </div>
 
-                          <div className={`order-status-badge ${statusClass}`}>
-                            {ord.status === 'Delivered' ? (
-                              <CheckCircle2 size={13} />
-                            ) : ord.status === 'In Transit' ? (
-                              <Truck size={13} />
-                            ) : (
-                              <Clock size={13} />
-                            )}
+                          <div className={`order-status-pill ${statusClass}`}>
+                            {isDelivered ? <CheckCircle2 size={13} /> : isInTransit ? <Truck size={13} /> : <Clock size={13} />}
                             <span>{ord.status}</span>
                           </div>
                         </div>
 
-                        {/* Items Thumbnail Row */}
-                        <div className="order-items-preview-strip">
+                        {/* Items preview */}
+                        <div className="order-items-scroll-row">
                           {ord.items && ord.items.map((item, idx) => (
-                            <div key={idx} className="preview-thumb-block">
-                              <img src={item.image} alt={item.name} />
-                              <div className="thumb-info">
-                                <span className="item-thumb-name">{item.name}</span>
-                                <span className="item-thumb-meta">Qty: {item.quantity} &bull; Size: {item.size}</span>
+                            <div key={idx} className="order-item-line">
+                              <img src={item.image} alt={item.name} className="order-item-img" />
+                              <div className="order-item-info">
+                                <span className="order-item-title">{item.name}</span>
+                                <span className="order-item-specs">
+                                  Size: {item.size} &bull; Qty: {item.quantity} &bull; {item.color || 'Standard'}
+                                </span>
                               </div>
                             </div>
                           ))}
                         </div>
 
-                        {/* Order Footer & Actions */}
-                        <div className="order-item-bottom">
-                          <div className="order-financial-info">
-                            <span className="order-total-label">Total Amount</span>
-                            <span className="order-total-value">{formatPrice(ord.total)}</span>
-                            <span className="order-pay-method">{ord.paymentMethod}</span>
+                        {/* Card bottom */}
+                        <div className="order-card-footer">
+                          <div className="order-price-group">
+                            <span className="order-price-label">Order Total:</span>
+                            <span className="order-price-amount">{formatPrice(ord.total)}</span>
+                            <span className="order-payment-tag">&bull; {ord.paymentMethod}</span>
                           </div>
 
-                          <div className="order-actions-group">
-                            <button 
-                              className="btn btn-outline-olive btn-sm track-order-btn"
-                              onClick={() => handleTrackClick(ord.id)}
-                            >
-                              <Truck size={14} />
-                              <span>Live Courier Tracking</span>
-                            </button>
-                          </div>
+                          <button 
+                            type="button" 
+                            className="btn-track-order"
+                            onClick={() => handleTrackClick(ord.id)}
+                          >
+                            <Truck size={14} />
+                            <span>Live Courier Tracking</span>
+                          </button>
                         </div>
                       </div>
                     );
@@ -258,28 +299,114 @@ const AccountModal = () => {
             </div>
           )}
 
-          {/* TAB 2: ADDRESSES */}
+          {/* ================= TAB 2: PROFILE & PREFERENCES ================= */}
+          {activeAccountTab === 'profile' && (
+            <div className="profile-tab-view animate-fade">
+              <div className="dashboard-section-header">
+                <div>
+                  <h4 className="dashboard-section-title">Personal Details &amp; Tailoring Profile</h4>
+                  <p className="dashboard-section-subtitle">
+                    Configure your primary contact information and preferred sartorial silhouette.
+                  </p>
+                </div>
+              </div>
+
+              <form onSubmit={handleProfileSubmit} className="profile-form-grid">
+                <div className="profile-fields-two-cols">
+                  <div className="profile-field-block">
+                    <label>Full Legal Name</label>
+                    <input 
+                      type="text" 
+                      value={profileForm.name}
+                      onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="profile-field-block">
+                    <label>Email Address</label>
+                    <input 
+                      type="email" 
+                      value={profileForm.email}
+                      onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="profile-fields-two-cols">
+                  <div className="profile-field-block">
+                    <label>Contact Phone / WhatsApp</label>
+                    <input 
+                      type="tel" 
+                      value={profileForm.phone}
+                      onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                      required
+                    />
+                  </div>
+
+                  <div className="profile-field-block">
+                    <label>Preferred Sizing</label>
+                    <select 
+                      value={profileForm.standardSize}
+                      onChange={(e) => setProfileForm({ ...profileForm, standardSize: e.target.value })}
+                    >
+                      <option value="XS">Extra Small (XS)</option>
+                      <option value="S">Small (S)</option>
+                      <option value="M">Medium (M) - Atelier Standard</option>
+                      <option value="L">Large (L)</option>
+                      <option value="XL">Extra Large (XL)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="profile-field-block">
+                  <label>Sartorial Silhouette Preference</label>
+                  <select 
+                    value={profileForm.stylePreference}
+                    onChange={(e) => setProfileForm({ ...profileForm, stylePreference: e.target.value })}
+                  >
+                    <option value="Relaxed Tailoring & Normandy Flax">Relaxed Tailoring &amp; Pure Normandy Flax</option>
+                    <option value="Raw Silk & Structured Heritage Weaves">Raw Silk &amp; Structured Heritage Weaves</option>
+                    <option value="Minimalist Monochrome & Clean Linens">Minimalist Monochrome &amp; Clean Linens</option>
+                    <option value="Warm Earth Neutrals & Layered Knits">Warm Earth Neutrals &amp; Layered Knits</option>
+                  </select>
+                </div>
+
+                <button type="submit" className="btn-save-profile">
+                  <Save size={14} style={{ marginRight: '6px', verticalAlign: 'middle' }} />
+                  <span>Save Profile Changes</span>
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* ================= TAB 3: ADDRESSES ================= */}
           {activeAccountTab === 'addresses' && (
             <div className="addresses-tab-view animate-fade">
-              <div className="tab-section-header">
+              <div className="dashboard-section-header">
                 <div>
-                  <h4 className="tab-section-title">Saved Shipping Addresses</h4>
-                  <p className="tab-section-desc">Manage delivery addresses for expedited checkout.</p>
+                  <h4 className="dashboard-section-title">Saved Shipping Addresses</h4>
+                  <p className="dashboard-section-subtitle">
+                    Addresses saved for complimentary express courier dispatch.
+                  </p>
                 </div>
+
                 <button 
+                  type="button" 
                   className="btn btn-outline-olive btn-sm"
                   onClick={() => setShowAddAddress(!showAddAddress)}
                 >
-                  <Plus size={15} />
-                  <span>{showAddAddress ? 'Cancel' : 'Add New Address'}</span>
+                  <Plus size={14} />
+                  <span>{showAddAddress ? 'Cancel' : 'Add Address'}</span>
                 </button>
               </div>
 
               {showAddAddress && (
-                <form onSubmit={handleSaveAddressSubmit} className="add-address-form animate-fade">
-                  <div className="form-row two-cols">
-                    <div className="form-group">
-                      <label>Address Label (e.g. Home, Office)</label>
+                <form onSubmit={handleSaveAddressSubmit} className="add-address-panel animate-fade">
+                  <div className="add-address-two-cols">
+                    <div className="profile-field-block">
+                      <label>Address Label (e.g. Home, Studio, Office)</label>
                       <input 
                         type="text" 
                         value={newAddress.title}
@@ -287,7 +414,7 @@ const AccountModal = () => {
                         required
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="profile-field-block">
                       <label>Recipient Name</label>
                       <input 
                         type="text" 
@@ -298,19 +425,19 @@ const AccountModal = () => {
                     </div>
                   </div>
 
-                  <div className="form-group">
-                    <label>Street Address / Apartment / Area</label>
+                  <div className="profile-field-block">
+                    <label>Street Address / Apartment / Sector</label>
                     <input 
                       type="text" 
                       value={newAddress.address}
                       onChange={(e) => setNewAddress({ ...newAddress, address: e.target.value })}
-                      placeholder="e.g. House 14, Street 2, Sector F-7/2"
+                      placeholder="e.g. House 42, Street 7, Phase 5, DHA"
                       required
                     />
                   </div>
 
-                  <div className="form-row two-cols">
-                    <div className="form-group">
+                  <div className="add-address-two-cols">
+                    <div className="profile-field-block">
                       <label>City</label>
                       <select 
                         value={newAddress.city}
@@ -321,9 +448,13 @@ const AccountModal = () => {
                         <option value="Islamabad">Islamabad</option>
                         <option value="Rawalpindi">Rawalpindi</option>
                         <option value="Faisalabad">Faisalabad</option>
+                        <option value="Peshawar">Peshawar</option>
+                        <option value="Multan">Multan</option>
+                        <option value="Quetta">Quetta</option>
                       </select>
                     </div>
-                    <div className="form-group">
+
+                    <div className="profile-field-block">
                       <label>Contact Phone</label>
                       <input 
                         type="tel" 
@@ -334,50 +465,54 @@ const AccountModal = () => {
                     </div>
                   </div>
 
-                  <button type="submit" className="btn btn-primary btn-sm">
+                  <button type="submit" className="btn btn-primary btn-sm" style={{ alignSelf: 'flex-start' }}>
                     Save Address
                   </button>
                 </form>
               )}
 
-              <div className="addresses-grid">
+              <div className="addresses-cards-grid">
                 {user.addresses && user.addresses.map((addr) => (
-                  <div key={addr.id} className="address-card">
-                    <div className="address-card-top">
-                      <span className="address-title">{addr.title}</span>
-                      {addr.isDefault && <span className="default-pill">Default</span>}
+                  <div key={addr.id} className="address-item-card">
+                    <div className="address-card-header">
+                      <span className="address-title-tag">{addr.title}</span>
+                      {addr.isDefault && <span className="address-default-badge">Default</span>}
                     </div>
-                    <p className="address-recipient">{addr.fullName}</p>
-                    <p className="address-street">{addr.address}</p>
-                    <p className="address-city">{addr.city}, Pakistan ({addr.postalCode || '54000'})</p>
-                    <p className="address-phone">Phone: {addr.phone}</p>
+                    <p className="address-recipient-name">{addr.fullName}</p>
+                    <p className="address-line-text">{addr.address}</p>
+                    <p className="address-line-text">{addr.city}, Pakistan ({addr.postalCode || '54000'})</p>
+                    <p className="address-phone-text">Phone: {addr.phone}</p>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {/* TAB 3: PAYMENT METHODS */}
+          {/* ================= TAB 4: PAYMENT METHODS ================= */}
           {activeAccountTab === 'savedCards' && (
             <div className="cards-tab-view animate-fade">
-              <div className="tab-section-header">
+              <div className="dashboard-section-header">
                 <div>
-                  <h4 className="tab-section-title">Saved Payment Methods</h4>
-                  <p className="tab-section-desc">Encrypted with PCI-DSS 256-bit atelier security.</p>
+                  <h4 className="dashboard-section-title">Encrypted Payment Cards</h4>
+                  <p className="dashboard-section-subtitle">
+                    Protected with 256-Bit SSL Atelier Encryption &amp; PCI-DSS standards.
+                  </p>
                 </div>
+
                 <button 
+                  type="button" 
                   className="btn btn-outline-olive btn-sm"
                   onClick={() => setShowAddCard(!showAddCard)}
                 >
-                  <Plus size={15} />
-                  <span>{showAddCard ? 'Cancel' : 'Add New Card'}</span>
+                  <Plus size={14} />
+                  <span>{showAddCard ? 'Cancel' : 'Add Card'}</span>
                 </button>
               </div>
 
               {showAddCard && (
-                <form onSubmit={handleSaveCardSubmit} className="add-card-form animate-fade">
-                  <div className="form-row two-cols">
-                    <div className="form-group">
+                <form onSubmit={handleSaveCardSubmit} className="add-address-panel animate-fade">
+                  <div className="add-address-two-cols">
+                    <div className="profile-field-block">
                       <label>Cardholder Name</label>
                       <input 
                         type="text" 
@@ -386,7 +521,7 @@ const AccountModal = () => {
                         required
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="profile-field-block">
                       <label>Card Type</label>
                       <select 
                         value={newCard.brand}
@@ -399,8 +534,8 @@ const AccountModal = () => {
                     </div>
                   </div>
 
-                  <div className="form-row two-cols">
-                    <div className="form-group">
+                  <div className="add-address-two-cols">
+                    <div className="profile-field-block">
                       <label>Card Number</label>
                       <input 
                         type="text" 
@@ -411,12 +546,12 @@ const AccountModal = () => {
                         required
                       />
                     </div>
-                    <div className="form-group">
-                      <label>Expiry (MM/YY)</label>
+                    <div className="profile-field-block">
+                      <label>Expiry Date (MM/YY)</label>
                       <input 
                         type="text" 
                         maxLength="5"
-                        placeholder="MM/YY"
+                        placeholder="12/28"
                         value={newCard.expiry}
                         onChange={(e) => setNewCard({ ...newCard, expiry: e.target.value })}
                         required
@@ -424,31 +559,31 @@ const AccountModal = () => {
                     </div>
                   </div>
 
-                  <button type="submit" className="btn btn-primary btn-sm">
+                  <button type="submit" className="btn btn-primary btn-sm" style={{ alignSelf: 'flex-start' }}>
                     Save Encrypted Card
                   </button>
                 </form>
               )}
 
-              <div className="saved-cards-grid">
+              <div className="cards-cards-grid">
                 {user.savedCards && user.savedCards.map((c) => (
-                  <div key={c.id} className="luxury-credit-card-preview">
-                    <div className="card-top-row">
-                      <span className="card-brand">{c.brand}</span>
-                      <ShieldCheck size={18} />
+                  <div key={c.id} className="luxury-card-display">
+                    <div className="card-top-line">
+                      <span className="card-brand-name">{c.brand}</span>
+                      <ShieldCheck size={18} color="#D4AF37" />
                     </div>
-                    <div className="card-chip"></div>
-                    <div className="card-number-display">
+                    <div className="card-chip-symbol"></div>
+                    <div className="card-masked-digits">
                       •••• &nbsp; •••• &nbsp; •••• &nbsp; {c.last4}
                     </div>
-                    <div className="card-bottom-row">
-                      <div>
-                        <span className="card-lbl">CARDHOLDER</span>
-                        <span className="card-val">{c.holder}</span>
+                    <div className="card-details-row">
+                      <div className="card-holder-col">
+                        <span className="card-small-label">CARDHOLDER</span>
+                        <span className="card-actual-val">{c.holder}</span>
                       </div>
-                      <div>
-                        <span className="card-lbl">EXPIRES</span>
-                        <span className="card-val">{c.expiry}</span>
+                      <div className="card-expiry-col">
+                        <span className="card-small-label">EXPIRES</span>
+                        <span className="card-actual-val">{c.expiry}</span>
                       </div>
                     </div>
                   </div>
@@ -456,69 +591,34 @@ const AccountModal = () => {
               </div>
             </div>
           )}
-
-          {/* TAB 4: PERKS */}
-          {activeAccountTab === 'perks' && (
-            <div className="perks-tab-view animate-fade">
-              <div className="perks-banner">
-                <Sparkles size={28} className="gold-sparkle" />
-                <div>
-                  <h4 className="perks-heading">You are a Valued VIP Gold Patron</h4>
-                  <p>Enjoy bespoke privileges reserved exclusively for our private membership circle.</p>
-                </div>
-              </div>
-
-              <div className="perks-grid">
-                <div className="perk-card">
-                  <div className="perk-icon-wrap">
-                    <Truck size={22} />
-                  </div>
-                  <h5>Complimentary Express Shipping</h5>
-                  <p>Zero delivery charges on all orders throughout Pakistan, dispatched via priority air courier.</p>
-                </div>
-
-                <div className="perk-card">
-                  <div className="perk-icon-wrap">
-                    <Sparkles size={22} />
-                  </div>
-                  <h5>Early Capsule Access</h5>
-                  <p>48-hour private window to view and acquire limited seasonal drops before public release.</p>
-                </div>
-
-                <div className="perk-card">
-                  <div className="perk-icon-wrap">
-                    <Smartphone size={22} />
-                  </div>
-                  <h5>Private WhatsApp Concierge</h5>
-                  <p>Direct line to our head stylist for custom fittings, size advice, and personal wardrobe curation.</p>
-                </div>
-
-                <div className="perk-card">
-                  <div className="perk-icon-wrap">
-                    <Award size={22} />
-                  </div>
-                  <h5>Double Atelier Points</h5>
-                  <p>Earn 2 loyalty points for every Rs. 100 spent, redeemable instantly on all future purchases.</p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* Footer Actions */}
+        {/* Modal Footer */}
         <div className="account-modal-footer">
-          <button className="btn btn-outline-danger btn-sm" onClick={logout}>
-            <LogOut size={15} />
-            <span>Sign Out</span>
+          <button 
+            type="button" 
+            className="btn-secondary-link"
+            onClick={logout}
+          >
+            <LogOut size={14} />
+            <span>Sign Out of Atelier</span>
           </button>
 
-          <button className="btn btn-primary btn-sm" onClick={() => setIsAccountOpen(false)}>
+          <button 
+            type="button" 
+            className="btn btn-primary btn-sm"
+            onClick={() => setIsAccountOpen(false)}
+          >
             Close Dashboard
           </button>
         </div>
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalNode, document.body)
+    : modalNode;
 };
 
 export default AccountModal;
