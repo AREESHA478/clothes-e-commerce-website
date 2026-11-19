@@ -197,6 +197,7 @@ const AppContent = () => {
         {(currentPage === 'login' || currentPage === 'register') && (
           <div className="page-view animate-fade">
             <LoginPage 
+              key={currentPage}
               initialTab={currentPage} 
               onNavigatePage={navigateToPage} 
             />

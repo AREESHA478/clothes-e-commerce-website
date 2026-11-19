@@ -160,14 +160,22 @@ const LoginPage = ({ initialTab = 'login', onNavigatePage }) => {
               <button 
                 type="button"
                 className={`auth-switcher-btn ${activeTab === 'login' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('login'); setResetSent(false); }}
+                onClick={() => { 
+                  setActiveTab('login'); 
+                  setResetSent(false); 
+                  if (onNavigatePage) onNavigatePage('login');
+                }}
               >
                 Sign In
               </button>
               <button 
                 type="button"
                 className={`auth-switcher-btn ${activeTab === 'register' ? 'active' : ''}`}
-                onClick={() => { setActiveTab('register'); setResetSent(false); }}
+                onClick={() => { 
+                  setActiveTab('register'); 
+                  setResetSent(false); 
+                  if (onNavigatePage) onNavigatePage('register');
+                }}
               >
                 Create Account
               </button>
@@ -285,7 +293,10 @@ const LoginPage = ({ initialTab = 'login', onNavigatePage }) => {
                 <span>New to OLIVÉRA?</span>
                 <button 
                   type="button"
-                  onClick={() => setActiveTab('register')}
+                  onClick={() => {
+                    setActiveTab('register');
+                    if (onNavigatePage) onNavigatePage('register');
+                  }}
                 >
                   Create an account
                 </button>
@@ -383,7 +394,10 @@ const LoginPage = ({ initialTab = 'login', onNavigatePage }) => {
                 <span>Already have an account?</span>
                 <button 
                   type="button"
-                  onClick={() => setActiveTab('login')}
+                  onClick={() => {
+                    setActiveTab('login');
+                    if (onNavigatePage) onNavigatePage('login');
+                  }}
                 >
                   Sign In
                 </button>

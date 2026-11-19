@@ -84,8 +84,14 @@ const Header = ({ currentPage, onNavigatePage, onNavigateCategory }) => {
   };
 
   const handleAuthClick = (tab = 'login') => {
-    setAuthModalTab(tab);
-    setIsAuthModalOpen(true);
+    if (currentPage === 'login' || currentPage === 'register') {
+      if (onNavigatePage) {
+        onNavigatePage(tab);
+      }
+    } else {
+      setAuthModalTab(tab);
+      setIsAuthModalOpen(true);
+    }
     setMobileMenuOpen(false);
   };
 
