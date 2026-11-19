@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useShop } from '../context/ShopContext';
 import { X, Ruler, Info } from 'lucide-react';
 import './SizeGuideModal.css';
@@ -26,20 +27,26 @@ const SizeGuideModal = () => {
     { size: 'XXL', chest: unit === 'inches' ? '48 - 50"' : '122 - 127 cm', waist: unit === 'inches' ? '40 - 42"' : '101 - 107 cm', collar: unit === 'inches' ? '18.5"' : '47 cm' }
   ];
 
-  return (
-    <div className="size-guide-overlay overlay-backdrop" onClick={() => setIsSizeGuideOpen(false)}>
-      <div className="size-guide-modal glass-panel" onClick={(e) => e.stopPropagation()}>
+  const modalNode = (
+    <div className="size-guide-overlay" onClick={() => setIsSizeGuideOpen(false)}>
+      <div 
+        className="size-guide-modal" 
+        onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Atelier Sizing Guide"
+      >
         <div className="size-guide-header">
           <div className="guide-title-row">
-            <Ruler size={22} className="ruler-icon" />
-            <h3 className="guide-title">Atelier Tailoring & Sizing Guide</h3>
+            <Ruler size={20} className="ruler-icon" />
+            <h3 className="guide-title">Atelier Tailoring &amp; Sizing Guide</h3>
           </div>
           <button 
             className="modal-close-btn"
             onClick={() => setIsSizeGuideOpen(false)}
             aria-label="Close size guide"
           >
-            <X size={20} />
+            <X size={18} />
           </button>
         </div>
 
@@ -64,18 +71,17 @@ const SizeGuideModal = () => {
               className={`u-btn ${unit === 'inches' ? 'active' : ''}`}
               onClick={() => setUnit('inches')}
             >
-              Inches
+              Inches (&quot;)
             </button>
             <button 
               className={`u-btn ${unit === 'cm' ? 'active' : ''}`}
               onClick={() => setUnit('cm')}
             >
-              Centimeters
+              Centimeters (cm)
             </button>
           </div>
         </div>
 
-        {/* Table */}
         <div className="size-table-container">
           <table className="size-table">
             <thead>
@@ -120,7 +126,7 @@ const SizeGuideModal = () => {
         </div>
 
         <div className="size-advice-box">
-          <Info size={18} className="advice-icon" />
+          <Info size={16} className="advice-icon" />
           <p>
             <strong>Atelier Fit Advice:</strong> Our relaxed linen garments are intentionally cut 
             with a fluid, effortless silhouette. If you prefer a more tailored body-contour fit, 
@@ -130,6 +136,10 @@ const SizeGuideModal = () => {
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined'
+    ? createPortal(modalNode, document.body)
+    : modalNode;
 };
 
 export default SizeGuideModal;

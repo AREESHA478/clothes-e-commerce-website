@@ -149,13 +149,22 @@ export const ShopProvider = ({ children }) => {
 
   const exchangeRate = 0.0036; // 1 PKR ~ 0.0036 USD (or $1 ~ 280 PKR)
 
-  // User Authentication State
+  // User Authentication State: Default is NULL (Guest). No user is logged in by default
   const [user, setUser] = useState(() => {
     try {
       const savedUser = localStorage.getItem('olivera_user');
-      return savedUser ? JSON.parse(savedUser) : defaultDemoUser;
+      if (savedUser) {
+        const parsed = JSON.parse(savedUser);
+        // Clear old auto-logged-in demo user if present so it defaults to logged out
+        if (parsed && parsed.id === 'usr-001') {
+          localStorage.removeItem('olivera_user');
+          return null;
+        }
+        return parsed;
+      }
+      return null;
     } catch {
-      return defaultDemoUser;
+      return null;
     }
   });
 

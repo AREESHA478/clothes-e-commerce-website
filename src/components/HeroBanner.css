@@ -1,5 +1,6 @@
 /* ===================================================================
    HERO BANNER - MINIMALIST AESTHETIC EDITORIAL
+   Fluid Motion & Quiet Luxury Micro-Interactions
    =================================================================== */
 
 .hero-section {
@@ -18,7 +19,7 @@
   position: relative;
 }
 
-/* Left Hero Content */
+/* Left Hero Content with Staggered Entrance */
 .hero-content {
   display: flex;
   flex-direction: column;
@@ -40,10 +41,11 @@
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin-bottom: 20px;
+  animation: fadeInDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .hero-pill-icon {
-  color: var(--olive-600);
+  color: var(--gold-500);
 }
 
 .hero-headline {
@@ -54,11 +56,12 @@
   color: var(--text-main);
   margin-bottom: 18px;
   letter-spacing: -0.015em;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.08s both;
 }
 
 .hero-headline-highlight {
   font-style: italic;
-  color: var(--olive-800);
+  color: var(--gold-600);
   font-weight: 400;
 }
 
@@ -69,6 +72,7 @@
   max-width: 520px;
   margin-bottom: 32px;
   font-weight: 400;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.16s both;
 }
 
 .hero-cta-group {
@@ -77,6 +81,11 @@
   gap: 14px;
   margin-bottom: 40px;
   flex-wrap: wrap;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.24s both;
+}
+
+.hero-cta-btn {
+  box-shadow: 0 4px 14px rgba(20, 21, 20, 0.14);
 }
 
 .hero-articles-btn {
@@ -86,7 +95,7 @@
 }
 
 .hero-articles-btn:hover {
-  background-color: var(--cream-200);
+  background-color: var(--cream-100);
   border-color: var(--text-main);
   color: var(--text-main);
 }
@@ -100,6 +109,7 @@
   border-top: 1px solid var(--border-subtle);
   width: 100%;
   flex-wrap: wrap;
+  animation: fadeInUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.32s both;
 }
 
 .metric-item {
@@ -114,7 +124,7 @@
 }
 
 .metric-icon-box {
-  color: var(--olive-700);
+  color: var(--gold-500);
   display: flex;
   align-items: center;
 }
@@ -137,13 +147,14 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  animation: scaleIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s both;
 }
 
 .hero-ambient-glow {
   position: absolute;
   width: 380px;
   height: 380px;
-  background: radial-gradient(circle, rgba(61, 74, 61, 0.12) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(178, 147, 98, 0.14) 0%, transparent 70%);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -170,10 +181,11 @@
   gap: 6px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
   z-index: 3;
+  animation: floatSubtle 4.5s ease-in-out infinite;
 }
 
 .pill-leaf-icon {
-  color: var(--olive-600);
+  color: var(--gold-500);
 }
 
 .hero-image-card {
@@ -196,11 +208,11 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .hero-image-card:hover .hero-main-img {
-  transform: scale(1.02);
+  transform: scale(1.04);
 }
 
 .image-tag-overlay {
@@ -213,6 +225,11 @@
   display: flex;
   flex-direction: column;
   gap: 2px;
+  transition: transform var(--transition-fast);
+}
+
+.hero-image-card:hover .image-tag-overlay {
+  transform: translateY(-2px);
 }
 
 .tag-season {
@@ -247,6 +264,8 @@
   border-radius: var(--radius-sm);
   display: none;
   z-index: 2;
+  box-shadow: var(--shadow-md);
+  animation: floatSubtle 5.5s ease-in-out 1s infinite;
 }
 
 @media (min-width: 1024px) {
@@ -284,7 +303,7 @@
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background-color: var(--olive-700);
+  background-color: var(--gold-500);
 }
 
 /* Tablet & Mobile Responsiveness */

@@ -10,7 +10,9 @@ import {
   ChevronDown, 
   ChevronUp, 
   Plus,
-  Minus
+  Minus,
+  ArrowLeft,
+  Info
 } from 'lucide-react';
 import './QuickViewModal.css';
 
@@ -21,7 +23,6 @@ const QuickViewModalContent = ({ product, onClose }) => {
     toggleWishlist, 
     isWishlisted, 
     formatPrice,
-    setIsSizeGuideOpen,
     setIsCheckoutOpen,
     productReviews,
     addProductReview,
@@ -37,6 +38,31 @@ const QuickViewModalContent = ({ product, onClose }) => {
   );
   const [quantity, setQuantity] = useState(1);
   const [openAccordion, setOpenAccordion] = useState('details');
+
+  // Direct In-Modal Size Chart Overlay State
+  const [showInlineSizeGuide, setShowInlineSizeGuide] = useState(false);
+  const [inlineUnit, setInlineUnit] = useState('inches');
+  const [inlineGenderTab, setInlineGenderTab] = useState(
+    product.gender?.toLowerCase().includes('men') ? 'men' : 'women'
+  );
+
+  const inlineWomenMeasurements = [
+    { size: 'XS', bust: inlineUnit === 'inches' ? '32 - 33"' : '81 - 84 cm', waist: inlineUnit === 'inches' ? '24 - 25"' : '61 - 64 cm', hip: inlineUnit === 'inches' ? '34 - 35"' : '86 - 89 cm' },
+    { size: 'S',  bust: inlineUnit === 'inches' ? '34 - 35"' : '86 - 89 cm', waist: inlineUnit === 'inches' ? '26 - 27"' : '66 - 69 cm', hip: inlineUnit === 'inches' ? '36 - 37"' : '91 - 94 cm' },
+    { size: 'M',  bust: inlineUnit === 'inches' ? '36 - 37"' : '91 - 94 cm', waist: inlineUnit === 'inches' ? '28 - 29"' : '71 - 74 cm', hip: inlineUnit === 'inches' ? '38 - 39"' : '96 - 99 cm' },
+    { size: 'L',  bust: inlineUnit === 'inches' ? '38 - 40"' : '96 - 101 cm', waist: inlineUnit === 'inches' ? '30 - 32"' : '76 - 81 cm', hip: inlineUnit === 'inches' ? '40 - 42"' : '101 - 107 cm' },
+    { size: 'XL', bust: inlineUnit === 'inches' ? '41 - 43"' : '104 - 109 cm', waist: inlineUnit === 'inches' ? '33 - 35"' : '84 - 89 cm', hip: inlineUnit === 'inches' ? '43 - 45"' : '109 - 114 cm' }
+  ];
+
+  const inlineMenMeasurements = [
+    { size: 'S',  chest: inlineUnit === 'inches' ? '36 - 38"' : '91 - 96 cm', waist: inlineUnit === 'inches' ? '30 - 31"' : '76 - 79 cm', collar: inlineUnit === 'inches' ? '14.5"' : '37 cm' },
+    { size: 'M',  chest: inlineUnit === 'inches' ? '39 - 41"' : '99 - 104 cm', waist: inlineUnit === 'inches' ? '32 - 33"' : '81 - 84 cm', collar: inlineUnit === 'inches' ? '15.5"' : '39 cm' },
+    { size: 'L',  chest: inlineUnit === 'inches' ? '42 - 44"' : '106 - 111 cm', waist: inlineUnit === 'inches' ? '34 - 36"' : '86 - 91 cm', collar: inlineUnit === 'inches' ? '16.5"' : '42 cm' },
+    { size: 'XL', chest: inlineUnit === 'inches' ? '45 - 47"' : '114 - 119 cm', waist: inlineUnit === 'inches' ? '37 - 39"' : '94 - 99 cm', collar: inlineUnit === 'inches' ? '17.5"' : '44 cm' },
+    { size: 'XXL', chest: inlineUnit === 'inches' ? '48 - 50"' : '122 - 127 cm', waist: inlineUnit === 'inches' ? '40 - 42"' : '101 - 107 cm', collar: inlineUnit === 'inches' ? '18.5"' : '47 cm' }
+  ];
+
+  const activeMeasurements = inlineGenderTab === 'women' ? inlineWomenMeasurements : inlineMenMeasurements;
 
   // Reviews state
   const [reviewRating, setReviewRating] = useState(5);
@@ -76,6 +102,136 @@ const QuickViewModalContent = ({ product, onClose }) => {
         >
           <X size={22} />
         </button>
+
+        {/* In-Modal Direct Size Chart Overlay: Guaranteed to render directly in front of product */}
+        {showInlineSizeGuide && (
+          <div className="quickview-size-overlay animate-fade">
+            <div className="size-panel-header">
+              <button 
+                type="button"
+                className="btn-back-to-prod"
+                onClick={() => setShowInlineSizeGuide(false)}
+              >
+                <ArrowLeft size={16} />
+                <span>Return to {product.name}</span>
+              </button>
+              <button 
+                type="button"
+                className="size-panel-close"
+                onClick={() => setShowInlineSizeGuide(false)}
+                aria-label="Close size guide"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="size-panel-body">
+              <div className="size-guide-title-block">
+                <div className="size-guide-icon-badge">
+                  <Ruler size={20} />
+                </div>
+                <div>
+                  <h3 className="size-guide-main-title">Atelier Tailoring &amp; Sizing Guide</h3>
+                  <p className="size-guide-sub">Tailored silhouette metrics for {product.name}</p>
+                </div>
+              </div>
+
+              <div className="size-guide-controls">
+                <div className="gender-tabs">
+                  <button 
+                    type="button"
+                    className={`g-tab ${inlineGenderTab === 'women' ? 'active' : ''}`}
+                    onClick={() => setInlineGenderTab('women')}
+                  >
+                    Women's Atelier
+                  </button>
+                  <button 
+                    type="button"
+                    className={`g-tab ${inlineGenderTab === 'men' ? 'active' : ''}`}
+                    onClick={() => setInlineGenderTab('men')}
+                  >
+                    Men's Sartorial
+                  </button>
+                </div>
+
+                <div className="unit-toggle">
+                  <button 
+                    type="button"
+                    className={`u-btn ${inlineUnit === 'inches' ? 'active' : ''}`}
+                    onClick={() => setInlineUnit('inches')}
+                  >
+                    Inches (&quot;)
+                  </button>
+                  <button 
+                    type="button"
+                    className={`u-btn ${inlineUnit === 'cm' ? 'active' : ''}`}
+                    onClick={() => setInlineUnit('cm')}
+                  >
+                    Centimeters (cm)
+                  </button>
+                </div>
+              </div>
+
+              <div className="size-table-container">
+                <table className="size-table">
+                  <thead>
+                    {inlineGenderTab === 'women' ? (
+                      <tr>
+                        <th>Size</th>
+                        <th>Bust</th>
+                        <th>Waist</th>
+                        <th>Hips</th>
+                        <th>Choose Fit</th>
+                      </tr>
+                    ) : (
+                      <tr>
+                        <th>Size</th>
+                        <th>Chest</th>
+                        <th>Waist</th>
+                        <th>Collar</th>
+                        <th>Choose Fit</th>
+                      </tr>
+                    )}
+                  </thead>
+                  <tbody>
+                    {activeMeasurements.map((m) => (
+                      <tr key={m.size} className={selectedSize === m.size ? 'selected-size-row' : ''}>
+                        <td className="size-col">{m.size}</td>
+                        <td>{m.bust || m.chest}</td>
+                        <td>{m.waist}</td>
+                        <td>{m.hip || m.collar}</td>
+                        <td>
+                          {product.sizes && product.sizes.includes(m.size) ? (
+                            <button
+                              type="button"
+                              className={`btn-select-size-inline ${selectedSize === m.size ? 'active' : ''}`}
+                              onClick={() => {
+                                setSelectedSize(m.size);
+                                setShowInlineSizeGuide(false);
+                              }}
+                            >
+                              {selectedSize === m.size ? '✓ Selected' : `Select ${m.size}`}
+                            </button>
+                          ) : (
+                            <span className="size-na">N/A</span>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="size-advice-box">
+                <Info size={16} className="advice-icon" />
+                <p>
+                  <strong>Atelier Fit Advice:</strong> Our silhouettes feature relaxed, tailored ease inspired by timeless cuts. 
+                  Clicking any &quot;Select [Size]&quot; button selects your size and returns directly to your garment.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
 
         <div className="quickview-grid">
           {/* Left Gallery */}
@@ -169,8 +325,9 @@ const QuickViewModalContent = ({ product, onClose }) => {
                     Size: <strong>{selectedSize}</strong>
                   </label>
                   <button 
+                    type="button"
                     className="size-guide-trigger"
-                    onClick={() => setIsSizeGuideOpen(true)}
+                    onClick={() => setShowInlineSizeGuide(true)}
                   >
                     <Ruler size={14} />
                     <span>View Size Chart</span>

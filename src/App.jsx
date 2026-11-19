@@ -56,6 +56,34 @@ const AppContent = () => {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, []);
 
+  // Smooth Scroll Reveal Animation Observer
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (typeof window === 'undefined' || !('IntersectionObserver' in window)) return;
+
+      const observerCallback = (entries, observer) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('is-revealed');
+            observer.unobserve(entry.target);
+          }
+        });
+      };
+
+      const observer = new IntersectionObserver(observerCallback, {
+        threshold: 0.08,
+        rootMargin: '0px 0px -25px 0px'
+      });
+
+      const targets = document.querySelectorAll(
+        '.product-card, .category-card, .home-article-card, .feature-card, .section-header, .atelier-quote-card'
+      );
+      targets.forEach((el) => observer.observe(el));
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [currentPage, activeCategory]);
+
   const navigateToPage = (pageName) => {
     setCurrentPage(pageName);
     window.location.hash = pageName;
@@ -212,10 +240,10 @@ const AppContent = () => {
       />
 
       {/* Global Drawers, Modals & Notifications */}
+      {/* Global Drawers, Modals & Notifications */}
       <CartDrawer />
       <WishlistDrawer />
       <CheckoutModal />
-      <SizeGuideModal />
       <SearchModal />
       <AuthModal />
       <AccountModal />
@@ -234,6 +262,9 @@ const AppContent = () => {
 
       {/* Global Quick View Product Modal (Topmost priority - opens on top of all pages and article reader) */}
       <QuickViewModal />
+
+      {/* Global Sizing Guide Modal (Opens on top of everything) */}
+      <SizeGuideModal />
 
       {/* Responsive Mobile Bottom Navigation Bar */}
       <MobileBottomNav 
